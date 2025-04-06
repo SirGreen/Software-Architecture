@@ -1,4 +1,4 @@
-using namespace BTL_SA.Modules.StaffMana.Domain.Model;
+using BTL_SA.Modules.StaffMana.Domain.Model;
 
 namespace BTL_SA.Modules.StaffMana.Infrastructure
 {

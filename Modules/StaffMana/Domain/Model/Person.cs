@@ -4,7 +4,6 @@ public class Person {
     private string? name;
     private bool gender;
     private string? phoneNumber;
-    private byte[]? photo;
     private string? address;
     private DateTime dateOfBirth;
     private string? email;
@@ -22,11 +21,6 @@ public class Person {
     public string? PhoneNumber {
         get => phoneNumber;
         set => phoneNumber = value;
-    }
-
-    public byte[]? Photo {
-        get => photo;
-        set => photo = value;
     }
 
     public string? Address {
