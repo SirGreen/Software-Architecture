@@ -5,15 +5,9 @@ using System.Data;
 
 namespace BTL_SA.Modules.StaffMana.Infrastructure;
 
-public class StaffRepositoryDb : IStaffRepository
+public class StaffRepositoryDb(DatabaseService dbService) : IStaffRepository
 {
-    private readonly DatabaseService _dbService;
-
-    public StaffRepositoryDb(DatabaseService dbService)
-    {
-        _dbService = dbService;
-    }
-
+    private readonly DatabaseService _dbService = dbService;
     public int Create(EmployeeForm employee)
     {
         var parameters = new Dictionary<string, object>
@@ -49,8 +43,6 @@ public class StaffRepositoryDb : IStaffRepository
 
         return 0;
     }
-
-
     public int Edit(EmployeeForm employee)
     {
         var parameters = new Dictionary<string, object>
@@ -76,7 +68,6 @@ public class StaffRepositoryDb : IStaffRepository
             return 0; // or handle the error as needed
         }
     }
-
     public int Delete(int id)
     {
         var parameters = new Dictionary<string, object>
@@ -91,25 +82,59 @@ public class StaffRepositoryDb : IStaffRepository
         }
         return 1; // Assuming deletion is successful
     }
-
+    public CredentialBase[] GetEmployeeCredential(int id) {
+        var parameters = new Dictionary<string, object>
+        {
+            { "@EmployeeId", id }
+        };
+        if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetEmployeeCredentials", parameters) is not SqlDataReader result)
+            return [];
+        // Here, you need to process the SqlDataReader and map the data to an array of CredentialBase objects.
+        using var reader = result;
+        var credentials = new List<CredentialBase>();
+        while (reader.Read())
+        {
+            var credentialType = reader.GetString(reader.GetOrdinal("CredentialType"));
+            if (credentialType == "License") // Assuming 1 is for License
+            {
+                var license = new License(
+                    reader.GetInt32(reader.GetOrdinal("CredentialId")),
+                    reader.GetString(reader.GetOrdinal("CredentialName")),
+                    reader.GetString(reader.GetOrdinal("IssuingBody")),
+                    reader.GetDateTime(reader.GetOrdinal("IssueDate")),
+                    reader.GetDateTime(reader.GetOrdinal("ExpirationDate")),
+                    reader.GetString(reader.GetOrdinal("LicenseNumber")),
+                    reader.GetString(reader.GetOrdinal("LicenseRestriction"))
+                );
+                credentials.Add(license);
+            }
+            else if (credentialType == "Certification") // Assuming 2 is for CredentialBase
+            {
+                var credential = new Certificate(
+                    reader.GetInt32(reader.GetOrdinal("CredentialId")),
+                    reader.GetString(reader.GetOrdinal("CredentialName")),
+                    reader.GetString(reader.GetOrdinal("IssuingBody")),
+                    reader.GetDateTime(reader.GetOrdinal("IssueDate")),
+                    reader.GetDateTime(reader.GetOrdinal("ExpirationDate")),
+                    reader.GetString(reader.GetOrdinal("CertificationLevel")),
+                    reader.GetString(reader.GetOrdinal("CertificationVersion"))
+                );
+                credentials.Add(credential);
+            }
+        }
+        return [.. credentials];
+    }
     public Employee? FindById(int id)
     {
         var parameters = new Dictionary<string, object>
         {
             { "@Id", id }
         };
-
-
         if (_dbService.DataBaseInquiry("SoftwareArchitecture.FindById", parameters) is not SqlDataReader result)
-        {
-            Console.WriteLine("Employee not found with ID: " + id);
             return null;
-        }
-        // Here, you need to process the SqlDataReader and map the data to an Employee object.
         using var reader = result;
         if (reader.Read())
         {
-            // Assuming the Employee model has properties like Id, Name, Role, etc.
             var employee = new Employee
             {
                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
@@ -122,7 +147,6 @@ public class StaffRepositoryDb : IStaffRepository
                 Department = reader.GetString(reader.GetOrdinal("Department")),
                 Role = reader.GetString(reader.GetOrdinal("Role"))
             };
-
             return employee;
         }
         else
@@ -131,5 +155,29 @@ public class StaffRepositoryDb : IStaffRepository
             return null;
         }
     }
-
+    public List<Employee> GetAll() {
+        
+        var parameters = new Dictionary<string, object>();
+        if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetAllEmployees", parameters) is not SqlDataReader result)
+            return [];
+        using var reader = result;
+        var employees = new List<Employee>();
+        while (reader.Read())
+        {
+            var employee = new Employee
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Name = reader.GetString(reader.GetOrdinal("Name")),
+                Gender = reader.GetBoolean(reader.GetOrdinal("Gender")),
+                PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                Address = reader.GetString(reader.GetOrdinal("Address")),
+                DateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth")),
+                Email = reader.GetString(reader.GetOrdinal("Email")),
+                Department = reader.GetString(reader.GetOrdinal("Department")),
+                Role = reader.GetString(reader.GetOrdinal("Role"))
+            };
+            employees.Add(employee);
+        }
+        return employees;
+    }
 }

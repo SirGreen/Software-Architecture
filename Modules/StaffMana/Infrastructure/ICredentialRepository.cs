@@ -4,9 +4,10 @@ namespace BTL_SA.Modules.StaffMana.Infrastructure
 {
     public interface ICredentialRepository
     {
-        int Insert(CredentialBase credential, Employee employee);
-        int Edit(CredentialBase credential);
+        int Create(CredentialBase credential, Employee employee);
+        CredentialBase? FindById(int id);
+        int Update(CredentialBase credential);
         int Delete(CredentialBase credential);
-        CredentialBase FindById(int id);
+        int AssignEmployeeToCredential(int credentialId, int employeeId);
     }
 }

@@ -218,6 +218,29 @@ BEGIN
 END;
 GO
 
+-- Create a procedure to get all employees
+CREATE PROCEDURE SoftwareArchitecture.GetAllEmployees
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        p.Id,
+        p.Name,
+        p.Gender,
+        p.PhoneNumber,
+        p.Address,
+        p.DateOfBirth,
+        p.Email,
+        e.Department,
+        e.Role
+    FROM SoftwareArchitecture.Person p
+    INNER JOIN SoftwareArchitecture.Employee e ON p.Id = e.Id;
+END;
+GO
+
+EXEC SoftwareArchitecture.GetAllEmployees;
+
 -- Example usage of GetEmployeeCredentials procedure
 EXEC SoftwareArchitecture.GetEmployeeCredentials
     @EmployeeId = 1;
@@ -373,6 +396,34 @@ BEGIN
 END;
 GO
 
+-- Create a procedure to get credential details by Id
+CREATE PROCEDURE SoftwareArchitecture.GetCredentialById
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Check if the Id exists in the License table
+    IF EXISTS (SELECT 1 FROM SoftwareArchitecture.License WHERE Id = @Id)
+    BEGIN
+        -- Call GetLicenseById procedure
+        EXEC SoftwareArchitecture.GetLicenseById @Id = @Id;
+    END
+    ELSE IF EXISTS (SELECT 1 FROM SoftwareArchitecture.Certification WHERE Id = @Id)
+    BEGIN
+        -- Call GetCertificationById procedure
+        EXEC SoftwareArchitecture.GetCertificationById @Id = @Id;
+    END
+    ELSE
+    BEGIN
+        -- If the Id does not exist in either table, return a message
+        PRINT 'No credential found with the given Id.';
+    END
+END;
+GO
+
+EXEC SoftwareArchitecture.GetCredentialById @Id = 2;
+
 -- Create a procedure to assign an employee to a CredentialBase
 CREATE PROCEDURE SoftwareArchitecture.AssignEmployeeToCredential
     @EmployeeId INT,
@@ -387,10 +438,91 @@ BEGIN
 END;
 GO
 
+-- Create a procedure to update a Credential (License or Certification)
+CREATE PROCEDURE SoftwareArchitecture.UpdateCredential
+    @Id INT,
+    @Name NVARCHAR(MAX),
+    @IssueDate DATE,
+    @ExpirationDate DATE,
+    @IssuingBody NVARCHAR(MAX),
+    @CredentialType NVARCHAR(MAX), -- 'License' or 'Certificate'
+    @Number NVARCHAR(MAX) = NULL, -- For License
+    @Restriction NVARCHAR(MAX) = NULL, -- For License
+    @Level NVARCHAR(MAX) = NULL, -- For Certification
+    @Version NVARCHAR(MAX) = NULL -- For Certification
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Update the CredentialBase table
+    UPDATE SoftwareArchitecture.CredentialBase
+    SET Name = @Name,
+        IssueDate = @IssueDate,
+        ExpirationDate = @ExpirationDate,
+        IssuingBody = @IssuingBody
+    WHERE Id = @Id;
+
+    -- Update the specific type of credential
+    IF @CredentialType = 'License'
+    BEGIN
+        UPDATE SoftwareArchitecture.License
+        SET Number = @Number,
+            Restriction = @Restriction
+        WHERE Id = @Id;
+    END
+    ELSE IF @CredentialType = 'Certificate'
+    BEGIN
+        UPDATE SoftwareArchitecture.Certification
+        SET Level = @Level,
+            Version = @Version
+        WHERE Id = @Id;
+    END
+    ELSE
+    BEGIN
+        PRINT 'Invalid CredentialType. Please specify either "License" or "Certificate".';
+    END
+END;
+GO
+
+-- Create a procedure to delete a Credential (License or Certification)
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.DeleteCredential;
+GO
+CREATE PROCEDURE SoftwareArchitecture.DeleteCredential
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Delete associations from EmployeeCredential table
+    DELETE FROM SoftwareArchitecture.EmployeeCredential
+    WHERE CredentialId = @Id;
+
+    -- Check if the Id exists in the License table
+    IF EXISTS (SELECT 1 FROM SoftwareArchitecture.License WHERE Id = @Id)
+    BEGIN
+        -- Delete from License table
+        DELETE FROM SoftwareArchitecture.License
+        WHERE Id = @Id;
+    END
+    ELSE IF EXISTS (SELECT 1 FROM SoftwareArchitecture.Certification WHERE Id = @Id)
+    BEGIN
+        -- Delete from Certification table
+        DELETE FROM SoftwareArchitecture.Certification
+        WHERE Id = @Id;
+    END
+
+    -- Delete from CredentialBase table
+    DELETE FROM SoftwareArchitecture.CredentialBase
+    WHERE Id = @Id;
+END;
+GO
+
+EXEC SoftwareArchitecture.DeleteCredential @Id = 2;
+
 EXEC SoftwareArchitecture.AssignEmployeeToCredential
     @EmployeeId = 1, @CredentialId = 2;
 
-EXEC SoftwareArchitecture.GetLicenseById @Id = 2;
+EXEC SoftwareArchitecture.GetLicenseById @Id = 1;
 EXEC SoftwareArchitecture.GetCertificationById @Id = 1;
 
 -- Example usage of AddCertification procedure

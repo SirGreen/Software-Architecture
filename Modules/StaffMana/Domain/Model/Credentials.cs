@@ -2,12 +2,14 @@ namespace BTL_SA.Modules.StaffMana.Domain.Model;
 
 public class CredentialBase {
     private int id;
+    private string? name;
     private string? issuingBody;
     private DateTime issueDate;
     private DateTime expirationDate;
 
-    public CredentialBase(int id, string? issuingBody, DateTime issueDate, DateTime expirationDate) {
+    public CredentialBase(int id, string? name, string? issuingBody, DateTime issueDate, DateTime expirationDate) {
         this.id = id;
+        this.name = name;
         this.issuingBody = issuingBody;
         this.issueDate = issueDate;
         this.expirationDate = expirationDate;
@@ -16,6 +18,11 @@ public class CredentialBase {
     public int Id {
         get => id;
         set => id = value;
+    }
+
+    public string? Name {
+        get => name;
+        set => name = value;
     }
 
     public string? IssuingBody {
@@ -46,7 +53,7 @@ public class License : CredentialBase {
     private string? licenseIden;
     private string? licenseName;
 
-    public License(int id, string? issuingBody, DateTime issueDate, DateTime expirationDate, string? licenseIden, string? licenseName) : base(id, issuingBody, issueDate, expirationDate) {
+    public License(int id, string? name, string? issuingBody, DateTime issueDate, DateTime expirationDate, string? licenseIden, string? licenseName) : base(id, name, issuingBody, issueDate, expirationDate) {
         this.licenseIden = licenseIden;
         this.licenseName = licenseName;
     }
@@ -62,22 +69,17 @@ public class License : CredentialBase {
     }
 }
 
-public class Certificate : CredentialBase {
-    private string? certificateIden;
-    private string? certificateName;
-
-    public Certificate(int id, string? issuingBody, DateTime issueDate, DateTime expirationDate, string? certificateIden, string? certificateName) : base(id, issuingBody, issueDate, expirationDate) {
-        this.certificateIden = certificateIden;
-        this.certificateName = certificateName;
-    }
+public class Certificate(int id, string? name, string? issuingBody, DateTime issueDate, DateTime expirationDate, string? level, string? version) : CredentialBase(id, name, issuingBody, issueDate, expirationDate) {
+    private string? level = level;
+    private string? version = version;
 
     public string? CertificateIden {
-        get => certificateIden;
-        set => certificateIden = value;
+        get => level;
+        set => level = value;
     }
 
     public string? CertificateName {
-        get => certificateName;
-        set => certificateName = value;
+        get => version;
+        set => version = value;
     }
 }

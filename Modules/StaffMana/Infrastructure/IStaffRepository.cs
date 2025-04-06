@@ -8,5 +8,6 @@ namespace BTL_SA.Modules.StaffMana.Infrastructure
         int Edit(EmployeeForm employee);
         int Delete(int id);
         Employee? FindById(int id);
+        List<Employee> GetAll();
     }
 }
