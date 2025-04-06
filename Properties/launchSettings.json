@@ -18,6 +18,11 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "dbase" : {
+      "commandName": "Executable",
+      "username": "DbSuperAdmin",
+      "pass": "SA@050425"
     }
   }
 }
