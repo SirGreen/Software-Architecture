@@ -82,7 +82,8 @@ public class StaffRepositoryDb(DatabaseService dbService) : IStaffRepository
         }
         return 1; // Assuming deletion is successful
     }
-    public CredentialBase[] GetEmployeeCredential(int id) {
+    public List<CredentialBase> GetEmployeeCredentials(int id)
+    {
         var parameters = new Dictionary<string, object>
         {
             { "@EmployeeId", id }
@@ -155,8 +156,9 @@ public class StaffRepositoryDb(DatabaseService dbService) : IStaffRepository
             return null;
         }
     }
-    public List<Employee> GetAll() {
-        
+    public List<Employee> GetAll()
+    {
+
         var parameters = new Dictionary<string, object>();
         if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetAllEmployees", parameters) is not SqlDataReader result)
             return [];

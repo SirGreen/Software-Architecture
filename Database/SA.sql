@@ -218,6 +218,9 @@ BEGIN
 END;
 GO
 
+EXEC SoftwareArchitecture.GetEmployeeCredentials
+    @EmployeeId = 2;
+
 -- Create a procedure to get all employees
 CREATE PROCEDURE SoftwareArchitecture.GetAllEmployees
 AS
@@ -352,6 +355,54 @@ BEGIN
 END;
 GO
 
+-- Create a procedure to add a Credential (License or Certification) based on CredentialType
+CREATE PROCEDURE SoftwareArchitecture.AddCredential
+    @CredentialType NVARCHAR(MAX), -- 'License' or 'Certificate'
+    @Name NVARCHAR(MAX),
+    @IssueDate DATE,
+    @ExpirationDate DATE,
+    @IssuingBody NVARCHAR(MAX),
+    @Number NVARCHAR(MAX) = NULL, -- For License
+    @Restriction NVARCHAR(MAX) = NULL, -- For License
+    @Level NVARCHAR(MAX) = NULL, -- For Certification
+    @Version NVARCHAR(MAX) = NULL, -- For Certification
+    @NewCredentialId INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @CredentialType = 'License'
+    BEGIN
+        -- Call AddLicense procedure
+        EXEC SoftwareArchitecture.AddLicense
+            @Name = @Name,
+            @IssueDate = @IssueDate,
+            @ExpirationDate = @ExpirationDate,
+            @IssuingBody = @IssuingBody,
+            @Number = @Number,
+            @Restriction = @Restriction,
+            @NewLicenseId = @NewCredentialId OUTPUT;
+    END
+    ELSE IF @CredentialType = 'Certificate'
+    BEGIN
+        -- Call AddCertification procedure
+        EXEC SoftwareArchitecture.AddCertification
+            @Name = @Name,
+            @IssueDate = @IssueDate,
+            @ExpirationDate = @ExpirationDate,
+            @IssuingBody = @IssuingBody,
+            @Level = @Level,
+            @Version = @Version,
+            @NewCertificationId = @NewCredentialId OUTPUT;
+    END
+    ELSE
+    BEGIN
+        PRINT 'Invalid CredentialType. Please specify either "License" or "Certificate".';
+        SET @NewCredentialId = NULL;
+    END
+END;
+GO
+
 -- Create a procedure to get information from License by Id
 DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetLicenseById;
 GO
@@ -437,6 +488,12 @@ BEGIN
     VALUES (@EmployeeId, @CredentialId);
 END;
 GO
+
+EXEC SoftwareArchitecture.AssignEmployeeToCredential
+    @EmployeeId = 1, @CredentialId = 1;
+GO
+EXEC SoftwareArchitecture.GetEmployeeCredentials
+    @EmployeeId = 1;
 
 -- Create a procedure to update a Credential (License or Certification)
 CREATE PROCEDURE SoftwareArchitecture.UpdateCredential

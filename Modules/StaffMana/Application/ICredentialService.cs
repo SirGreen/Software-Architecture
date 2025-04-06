@@ -5,5 +5,5 @@ namespace BTL_SA.Modules.StaffMana.Application;
 public interface ICredentialService
 {
     int UploadCredential(Employee employee, CredentialBase credential);
-    int RenewCredential(CredentialBase credential);
+    int RenewCredential(int credentialId, DateTime newExprDate);
 }

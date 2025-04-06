@@ -4,7 +4,7 @@ public class Employee : Person {
     private int id;
     private string? departmemt;
     private string? role;
-    private CredentialBase[]? credentials;
+    private List<CredentialBase>? credentials;
     
     public int Id {
         get => id;
@@ -21,22 +21,17 @@ public class Employee : Person {
         set => role = value;
     }
 
-    public CredentialBase[]? Credentials {
+    public List<CredentialBase>? Credentials {
         get => credentials;
         set => credentials = value;
     }
+}
 
-    public int AddCredential(CredentialBase credential) {
-        try {
-            if (credentials == null) {
-                credentials = [credential];
-            } else {
-                Array.Resize(ref credentials, credentials.Length + 1);
-                credentials[^1] = credential;
-            }
-            return credentials.Length;
-        } catch {
-            return 0;
-        }
-    }
+public class EmployeeViewModel(Employee employee) : Person {
+    public int Id { get; set; } = employee.Id;
+    public string? Department { get; set; } = employee.Department;
+    public string? Role { get; set; } = employee.Role;
+    public List<License>? License { get; set; } = employee.Credentials?.OfType<License>().ToList();
+    public List<Certificate>? Certificates { get; set; } = employee.Credentials?.OfType<Certificate>().ToList();
+    public new string Gender { get; set; } = employee.Gender? "Male" : "Female";
 }

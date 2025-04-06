@@ -9,5 +9,6 @@ namespace BTL_SA.Modules.StaffMana.Infrastructure
         int Delete(int id);
         Employee? FindById(int id);
         List<Employee> GetAll();
+        List<CredentialBase> GetEmployeeCredentials(int employeeId);
     }
 }

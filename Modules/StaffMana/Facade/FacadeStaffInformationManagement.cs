@@ -44,9 +44,9 @@ public class FacadeStaffInformationManagement(
         return _credentialService.UploadCredential(employee, credential);
     }
 
-    public int RenewCredential(CredentialBase credential)
+    public int RenewCredential(int credentialId, DateTime newExprDate)
     {
-        return _credentialService.RenewCredential(credential);
+        return _credentialService.RenewCredential(credentialId, newExprDate);
     }
 
     public int AssignRole(Employee employee, string role)

@@ -29,35 +29,41 @@ public class CredentialRepositoryDb(DatabaseService dbService) : ICredentialRepo
                     Direction = ParameterDirection.Output
                 }
             };
-            var outString = "";
             if (credential is License license)
             {
-                outString = "@NewLicenseId";
-                parameters.Add("@Number", license.LicenseIden ?? string.Empty);
-                parameters.Add("@Restriction", license.LicenseName ?? string.Empty);
+                parameters.Add("@CredentialType", "License");
+                parameters.Add("@Number", license.Number ?? string.Empty);
+                parameters.Add("@Restriction", license.Restriction ?? string.Empty);
             }
             else if (credential is Certificate certificate)
             {
-                outString = "@NewCertificateId";
-                parameters.Add("@Level", certificate.CertificateIden ?? string.Empty);
-                parameters.Add("@Version", certificate.CertificateName ?? string.Empty);
+                parameters.Add("@CredentialType", "Certificate");
+                parameters.Add("@Level", certificate.Level ?? string.Empty);
+                parameters.Add("@Version", certificate.Version ?? string.Empty);
             }
             var result = _dbService.DataBaseInquiry("SoftwareArchitecture.AddCredential", parameters, outputParameters);
+            var gId = 0;
             if (result is Dictionary<string, object> outputs &&
-                outputs.TryGetValue(outString, out var newId) &&
+                outputs.TryGetValue("@NewCredentialId", out var newId) &&
                 int.TryParse(newId?.ToString(), out var id))
             {
                 Console.WriteLine("Created credential ID: " + id);
-                return id;
+                gId = id;
             }
+
+            _dbService.DataBaseInquiry("SoftwareArchitecture.AssignEmployeeToCredential", new Dictionary<string, object>
+            {
+                { "@EmployeeId", employee.Id },
+                { "@CredentialId", gId }
+            });
+
+            return gId;
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error creating credential: " + ex.Message);
             return 0;
         }
-
-        return 1;
     }
 
     public CredentialBase? FindById(int id)
@@ -97,7 +103,6 @@ public class CredentialRepositoryDb(DatabaseService dbService) : ICredentialRepo
         }
         return null;
     }
-
     public int Update(CredentialBase credential) {
         try
         {
@@ -112,14 +117,14 @@ public class CredentialRepositoryDb(DatabaseService dbService) : ICredentialRepo
             if (credential is License license)
             {
                 parameters.Add("@CredentialType","License");
-                parameters.Add("@Number", license.LicenseIden ?? string.Empty);
-                parameters.Add("@Restriction", license.LicenseName ?? string.Empty);
+                parameters.Add("@Number", license.Number ?? string.Empty);
+                parameters.Add("@Restriction", license.Restriction ?? string.Empty);
             }
             else if (credential is Certificate certificate)
             {
                 parameters.Add("@CredentialType","Certificate");
-                parameters.Add("@Level", certificate.CertificateIden ?? string.Empty);
-                parameters.Add("@Version", certificate.CertificateName ?? string.Empty);
+                parameters.Add("@Level", certificate.Level ?? string.Empty);
+                parameters.Add("@Version", certificate.Version ?? string.Empty);
             }
             _dbService.DataBaseInquiry("SoftwareArchitecture.UpdateCredential", parameters);
             return 1;

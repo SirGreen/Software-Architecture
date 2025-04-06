@@ -1,5 +1,7 @@
 using BTL_SA.Infrastructure;
 using BTL_SA.Modules.StaffMana.Infrastructure;
+using BTL_SA.Modules.StaffMana.Application;
+using BTL_SA.Modules.StaffMana.Facade;
 
 using Microsoft.OpenApi.Models;
 
@@ -8,8 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<DatabaseService>();
-builder.Services.AddScoped<IStaffRepository, StaffRepositoryDb>();
+builder.Services.AddSingleton<IStaffRepository, StaffRepositoryDb>();
+builder.Services.AddSingleton<ICredentialRepository, CredentialRepositoryDb>();
 
+builder.Services.AddSingleton<IQuerySevice, QueryService>();
+builder.Services.AddSingleton<IEmployeeService, EmployeeService>();
+builder.Services.AddSingleton<IAssignmentService, AssignmentService>();
+builder.Services.AddSingleton<ICredentialService, CredentialService>();
+
+builder.Services.AddSingleton<FacadeStaffInformationManagement>();
 // Add Swagger services
 builder.Services.AddSwaggerGen(c =>
 {

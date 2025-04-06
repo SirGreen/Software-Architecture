@@ -49,23 +49,18 @@ public class CredentialBase {
     }
 }
 
-public class License : CredentialBase {
-    private string? licenseIden;
-    private string? licenseName;
+public class License(int id, string? name, string? issuingBody, DateTime issueDate, DateTime expirationDate, string? number, string? restriction) : CredentialBase(id, name, issuingBody, issueDate, expirationDate) {
+    private string? number = number;
+    private string? restriction = restriction;
 
-    public License(int id, string? name, string? issuingBody, DateTime issueDate, DateTime expirationDate, string? licenseIden, string? licenseName) : base(id, name, issuingBody, issueDate, expirationDate) {
-        this.licenseIden = licenseIden;
-        this.licenseName = licenseName;
+    public string? Number {
+        get => number;
+        set => number = value;
     }
 
-    public string? LicenseIden {
-        get => licenseIden;
-        set => licenseIden = value;
-    }
-
-    public string? LicenseName {
-        get => licenseName;
-        set => licenseName = value;
+    public string? Restriction {
+        get => restriction;
+        set => restriction = value;
     }
 }
 
@@ -73,12 +68,12 @@ public class Certificate(int id, string? name, string? issuingBody, DateTime iss
     private string? level = level;
     private string? version = version;
 
-    public string? CertificateIden {
+    public string? Level {
         get => level;
         set => level = value;
     }
 
-    public string? CertificateName {
+    public string? Version {
         get => version;
         set => version = value;
     }

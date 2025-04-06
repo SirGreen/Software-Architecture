@@ -16,12 +16,18 @@ public class CredentialService(ICredentialRepository credentialRepository) : ICr
         return id;
     }
 
-    public int RenewCredential(CredentialBase credential)
+    public int RenewCredential(int credentialId, DateTime newExprDate)
     {
-        if (credential == null)
+        if (credentialId <= 0)
         {
             return 0;
         }
+        var credential = _credentialRepository.FindById(credentialId);
+        if (credential == null || credential.ExpirationDate >= newExprDate)
+        {
+            return -1;
+        }
+        credential.ExpirationDate = newExprDate;
         var id = _credentialRepository.Update(credential);
         return id;
     }

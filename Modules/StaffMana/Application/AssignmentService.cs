@@ -14,13 +14,7 @@ public class AssignmentService(IStaffRepository staffRepository) : IAssignmentSe
         }
 
         employee.Role = role;
-        var employeeForm = new EmployeeForm
-        {
-            Id = employee.Id,
-            Name = employee.Name,
-            Role = employee.Role ?? "Unknown",
-            Department = employee.Department ?? "Unknown"
-        };
+        var employeeForm = new EmployeeForm(employee);
         var result = _staffRepository.Edit(employeeForm);
         return result;
     }
@@ -33,13 +27,7 @@ public class AssignmentService(IStaffRepository staffRepository) : IAssignmentSe
         }
 
         employee.Department = department;
-        var employeeForm = new EmployeeForm
-        {
-            Id = employee.Id,
-            Name = employee.Name,
-            Role = employee.Role ?? "Unknown",
-            Department = employee.Department ?? "Unknown"
-        };
+        var employeeForm = new EmployeeForm(employee);
         var result = _staffRepository.Edit(employeeForm);
         return result;
     }

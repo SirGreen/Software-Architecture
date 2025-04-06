@@ -39,7 +39,7 @@ namespace BTL_SA.Modules.StaffMana.Endpoints
             var employee = _staffInfoMana.FindById(id);
             if (employee != null)
             {
-                return Ok(employee);
+                return Ok(new EmployeeViewModel(employee));
             }
             return NotFound(new { message = "Employee not found." });
         }
@@ -50,7 +50,8 @@ namespace BTL_SA.Modules.StaffMana.Endpoints
             var employees = _staffInfoMana.GetAll();
             if (employees != null && employees.Count > 0)
             {
-                return Ok(employees);
+                var employeeViewModels = employees.Select(e => new EmployeeViewModel(e)).ToList();
+                return Ok(employeeViewModels);
             }
             return NotFound(new { message = "No employees found." });
         }
@@ -67,31 +68,50 @@ namespace BTL_SA.Modules.StaffMana.Endpoints
         }
 
         [HttpPost("uploadcredential")]
-        public IActionResult UploadCredential([FromBody] CredentialBase credential, [FromQuery] int employeeId)
+        public IActionResult UploadCredential([FromBody] CredentialForm credential, [FromQuery] int employeeId)
         {
-            var employee = _staffInfoMana.FindById(employeeId);
-            if (employee == null)
+            try
             {
-                return NotFound(new { message = "Employee not found." });
+                var employee = _staffInfoMana.FindById(employeeId);
+                if (employee == null)
+                {
+                    return NotFound(new { message = "Employee not found." });
+                }
+                CredentialBase cre = (CredentialBase)credential.CreateLicenseOrCertificate();
+                var result = _staffInfoMana.UploadCredential(employee, cre);
+                if (result != 0)
+                {
+                    return Ok(new { message = "Credential uploaded successfully.", credentialId = result });
+                }
+                return BadRequest(new { message = "Failed to upload credential." });
             }
-
-            var result = _staffInfoMana.UploadCredential(employee, credential);
-            if (result != 0)
+            catch (Exception ex)
             {
-                return Ok(new { message = "Credential uploaded successfully.", credentialId = result });
+                Console.WriteLine("Error uploading credential: " + ex.Message);
+                return StatusCode(500, new { message = "Internal server error." });
             }
-            return BadRequest(new { message = "Failed to upload credential." });
         }
 
         [HttpPost("renewcredential")]
-        public IActionResult RenewCredential([FromBody] CredentialBase credential)
+        public IActionResult RenewCredential([FromBody] RenewCredForm credential)
         {
-            var result = _staffInfoMana.RenewCredential(credential);
-            if (result != 0)
+            try
             {
-                return Ok(new { message = "Credential renewed successfully.", credentialId = result });
+                var result = _staffInfoMana.RenewCredential(credential.CredId, credential.NewExprDate);
+                if (result == 1)
+                {
+                    return Ok(new { message = "Credential renewed successfully.", credentialId = result });
+                } else if (result == -1)
+                {
+                    return BadRequest(new { message = "Credential has not expired yet." });
+                }
+                return BadRequest(new { message = "Failed to renew credential." });
             }
-            return BadRequest(new { message = "Failed to renew credential." });
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error renewing credential: " + ex.Message);
+                return StatusCode(500, new { message = "Internal server error." });
+            }
         }
 
         [HttpPost("assignrole")]
