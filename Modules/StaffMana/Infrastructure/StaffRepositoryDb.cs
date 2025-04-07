@@ -90,7 +90,6 @@ public class StaffRepositoryDb(DatabaseService dbService) : IStaffRepository
         };
         if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetEmployeeCredentials", parameters) is not SqlDataReader result)
             return [];
-        // Here, you need to process the SqlDataReader and map the data to an array of CredentialBase objects.
         using var reader = result;
         var credentials = new List<CredentialBase>();
         while (reader.Read())
@@ -148,6 +147,7 @@ public class StaffRepositoryDb(DatabaseService dbService) : IStaffRepository
                 Department = reader.GetString(reader.GetOrdinal("Department")),
                 Role = reader.GetString(reader.GetOrdinal("Role"))
             };
+            // Console.WriteLine("Found employee ID: " + employee.Name);
             return employee;
         }
         else

@@ -219,7 +219,7 @@ END;
 GO
 
 EXEC SoftwareArchitecture.GetEmployeeCredentials
-    @EmployeeId = 2;
+    @EmployeeId = 1;
 
 -- Create a procedure to get all employees
 CREATE PROCEDURE SoftwareArchitecture.GetAllEmployees
@@ -611,7 +611,7 @@ EXEC SoftwareArchitecture.AddLicense
 SELECT @NewLicenseId AS NewLicenseId;
 
 EXEC SoftwareArchitecture.DeleteEmployee @Id = 4;
-EXEC SoftwareArchitecture.FindById @Id = 4;
+EXEC SoftwareArchitecture.FindById @Id = 3;
 
 -- Example usage of EditEmployee procedure
 EXEC SoftwareArchitecture.EditEmployee
