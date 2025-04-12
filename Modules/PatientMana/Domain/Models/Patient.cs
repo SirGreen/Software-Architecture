@@ -39,7 +39,7 @@ namespace BTL_SA.Modules.PatientMana.Domain.Models
         public string? HealthInsuranceId { get; set; }
         public PatientForm(Patient patient)
         {
-            Id = patient.Id
+            Id = patient.Id;
             Name = patient.Name;
             Gender = patient.Gender;
             PhoneNumber = patient.PhoneNumber;

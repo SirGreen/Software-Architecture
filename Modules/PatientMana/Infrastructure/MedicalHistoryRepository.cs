@@ -188,7 +188,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             var parameter = new Dictionary<string, object>
             {
                 { "@MedicalHistoryId", id}
-            }
+            };
             try { _dbService.DataBaseInquiry("SoftwareArchitecture.DeleteMedicalHistory", parameters); }
             catch (SqlException ex)
             {

@@ -71,7 +71,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
         public List<PatientVisit> findByPatientId(int id) {
             var parameters = new Dictionary<string, object> {
                 { "@PatientId", id}
-            }
+            };
             if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetPatientVisitsByPatientId", parameters) is not SqlDataReader result)
                 return null;
             using var reader = result;
@@ -130,7 +130,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
         public int Update(int id, PatientVisitForm patient) {
             var parameters = new Dictionary<string, object>
             {
-                { "@VisitId", id}
+                { "@VisitId", id},
                 { "@PatientId", patient.PatientId },
                 { "@VisitDate", patient.VisitDate },
                 { "@Notes", patient.Notes ?? string.Empty }
@@ -150,7 +150,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             var parameter = new Dictionary<string, object>
             {
                 { "@VisitId", id}
-            }
+            };
             try { _dbService.DataBaseInquiry("SoftwareArchitecture.DeletePatientVisit", parameters); }
             catch (SqlException ex)
             {
