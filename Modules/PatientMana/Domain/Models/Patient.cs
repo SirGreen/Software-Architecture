@@ -20,6 +20,7 @@ namespace BTL_SA.Modules.PatientMana.Domain.Models
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
         public new string Gender { get; set; }
+
         public PatientViewModel(Patient patient)
         {
             Id = patient.Id;
@@ -36,7 +37,22 @@ namespace BTL_SA.Modules.PatientMana.Domain.Models
     }
 
     public class PatientForm : Person {
+        public int Id { get; set; }  // Thêm property Id
         public string? HealthInsuranceId { get; set; }
+
+        [System.Text.Json.Serialization.JsonConstructor]
+        public PatientForm(int id, string name, bool gender, string phoneNumber, string address, DateTime dateOfBirth, string email, string healthInsuranceId)
+        {
+            Id = id;
+            Name = name;
+            Gender = gender;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            DateOfBirth = dateOfBirth;
+            Email = email;
+            HealthInsuranceId = healthInsuranceId;
+        }
+
         public PatientForm(Patient patient)
         {
             Id = patient.Id;

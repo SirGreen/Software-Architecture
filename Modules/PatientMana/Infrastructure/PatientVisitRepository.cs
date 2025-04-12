@@ -1,5 +1,7 @@
 using BTL_SA.Infrastructure;
 using BTL_SA.Modules.PatientMana.Domain.Models;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace BTL_SA.Modules.PatientMana.Infrastructure
 {
@@ -34,7 +36,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             }
             return patientVisits;
         }
-        public PatientVisit findById(int id) {
+        public PatientVisitView findById(int id) {
             var parameters = new Dictionary<string, object>
             {
                 { "@VisitId", id }
@@ -68,7 +70,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 return null;
             }
         }
-        public List<PatientVisit> findByPatientId(int id) {
+        public List<PatientVisitView> findByPatientId(int id) {
             var parameters = new Dictionary<string, object> {
                 { "@PatientId", id}
             };
@@ -147,7 +149,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             }
         }
         public int Delete(int id) {
-            var parameter = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 { "@VisitId", id}
             };
@@ -161,3 +163,6 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
         }
     }
 }
+
+// PatientService
+// IPatientService

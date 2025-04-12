@@ -76,7 +76,7 @@ BEGIN
     (Id, HealthInsuranceId)
   VALUES
     (@NewPatientId, @HealthInsuranceId);
-
+  --  (@NewPersonId, @HealthInsuranceId); nè Hạnh oi
   SET @NewPatientId = @NewPersonId
 
 END;

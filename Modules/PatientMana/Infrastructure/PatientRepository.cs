@@ -152,7 +152,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             }
         }
         public int Delete(int id) {
-            var parameter = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 { "@PatientId", id}
             };
