@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using BTL_SA.Modules.PatientMana.Domain.Models;
 using BTL_SA.Modules.PatientMana.Facade;
 
@@ -11,6 +12,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         private readonly FacadePatientManagement _patientMana = patinentMana;
 
         [HttpGet("PatientInfo")]
+        [SwaggerOperation(Summary = "Retrieve all patients.")]
         public IActionResult GetAllPatient()
         {
             var patients = _patientMana.GetAllPatient();
@@ -23,6 +25,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpGet("PatientInfo/{id:int}")]
+        [SwaggerOperation(Summary = "Retrieve a patient by ID.")]
         public IActionResult FindById([FromRoute] int id)
         {
             var patient = _patientMana.GetPatientById(id);
@@ -33,18 +36,8 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
             return NotFound(new { message = "Patient not found." });
         }
 
-        // [HttpGet("PatientInfo/FindByEmail")]
-        // public IActionResult FindByEmail([FromBody] string email)
-        // {
-        //     var patient = _patientMana.GetPatientByEmail(email);
-        //     if (patient != null)
-        //     {
-        //         return Ok(new PatientViewModel(patient));
-        //     }
-        //     return NotFound(new { message = "Patinent not found." });
-        // }
-
         [HttpPost("PatientInfo")]
+        [SwaggerOperation(Summary = "Create a new patient.")]
         public IActionResult CreatePatient([FromBody] PatientForm patient)
         {
             var result = _patientMana.CreatePatient(patient);
@@ -56,6 +49,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpPut("PatientInfo/{id}")]
+        [SwaggerOperation(Summary = "Edit an existing patient by ID.")]
         public IActionResult EditPatient([FromRoute]int id ,[FromBody] PatientForm patient)
         {
             var result = _patientMana.UpdatePatient(id, patient);
@@ -67,6 +61,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpDelete("PatientInfo/{id}")]
+        [SwaggerOperation(Summary = "Delete a patient by ID.")]
         public IActionResult DeletePatient([FromRoute] int id)
         {
             var result = _patientMana.DeletePatient(id);
@@ -78,6 +73,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpGet("PatientVisit")]
+        [SwaggerOperation(Summary = "Retrieve all patient visits.")]
         public IActionResult GetPatientVisit() {
             var visits = _patientMana.GetAllVisit();
             if (visits != null) {
@@ -87,6 +83,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpGet("PatientVisit/{id}")]
+        [SwaggerOperation(Summary = "Retrieve a patient visit by ID.")]
         public IActionResult GetPatientVisitById([FromRoute] int id) {
             var visits = _patientMana.GetVisitById(id);
             if (visits != null) {
@@ -96,6 +93,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpPost("PatientVisit")]
+        [SwaggerOperation(Summary = "Create a new patient visit.")]
         public IActionResult CreatePatientVisit([FromBody] PatientVisitForm patientVisitForm) {
             var result = _patientMana.CreatePatientVisit(patientVisitForm);
             if (result != 0)
@@ -106,6 +104,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpPut("PatientVisit/{id}")]
+        [SwaggerOperation(Summary = "Edit an existing patient visit by ID.")]
         public IActionResult EditPatientVisit([FromRoute]int id ,[FromBody] PatientVisitForm patientVisitForm)
         {
             var result = _patientMana.UpdatePatientVisit(id, patientVisitForm);
@@ -117,6 +116,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpDelete("PatientVisit/{id}")]
+        [SwaggerOperation(Summary = "Delete a patient visit by ID.")]
         public IActionResult DeletePatientVisit([FromRoute] int id)
         {
             var result = _patientMana.DeletePatientVisit(id);
@@ -128,6 +128,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpGet("MedicalHistory")]
+        [SwaggerOperation(Summary = "Retrieve all medical histories.")]
         public IActionResult GetMedicalHistory() {
             var medicalHistory = _patientMana.GetAllMedicalHistory();
             if (medicalHistory.Count > 0) {
@@ -137,6 +138,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpGet("MedicalHistory/{id}")]
+        [SwaggerOperation(Summary = "Retrieve a medical history by ID.")]
         public IActionResult GetMedicalHistoryById([FromRoute] int id) {
             var medicalHistory = _patientMana.GetMedicalHistoryById(id);
             if (medicalHistory != null) {
@@ -146,6 +148,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpPost("MedicalHistory")]
+        [SwaggerOperation(Summary = "Create a new medical history.")]
         public IActionResult CreateMedicalHistory([FromBody] MedicalHistoryForm medicalHistoryForm) {
             var result = _patientMana.CreateMedicalHistory(medicalHistoryForm);
             if (result != 0)
@@ -156,6 +159,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpPut("MedicalHistory/{id}")]
+        [SwaggerOperation(Summary = "Edit an existing medical history by ID.")]
         public IActionResult EditMedicalHistory([FromRoute]int id ,[FromBody] MedicalHistoryForm medicalHistoryForm)
         {
             var result = _patientMana.UpdateMedicalHistory(id, medicalHistoryForm);
@@ -167,6 +171,7 @@ namespace BTL_SA.Modules.PatientMana.Endpoints
         }
 
         [HttpDelete("MedicalHistory/{id}")]
+        [SwaggerOperation(Summary = "Delete a medical history by ID.")]
         public IActionResult DeleteMedicalHistory([FromRoute] int id)
         {
             var result = _patientMana.DeleteMedicalHistory(id);

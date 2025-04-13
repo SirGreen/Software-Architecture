@@ -63,6 +63,8 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API documentation for the BTL-SA application"
     });
+    c.EnableAnnotations(); // Enable annotations for Swagger documentation
+    
 });
 
 var app = builder.Build();
