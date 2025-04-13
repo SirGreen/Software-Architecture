@@ -142,7 +142,7 @@ AS
 BEGIN
   SET NOCOUNT ON;
 
-  SELECT 
+  SELECT
     p.Id AS PatientId,
     p.HealthInsuranceId,
     p.CreatedDate,
@@ -153,9 +153,9 @@ BEGIN
     per.Address,
     per.DateOfBirth,
     per.Email
-  FROM 
+  FROM
     SoftwareArchitecture.Patient p
-  INNER JOIN 
+    INNER JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id;
 END;
 GO
@@ -182,7 +182,7 @@ BEGIN
     per.Email
   FROM
     SoftwareArchitecture.Patient p
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id
   WHERE
     p.Id = @PatientId;
@@ -211,7 +211,7 @@ BEGIN
     per.Email
   FROM
     SoftwareArchitecture.Patient p
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id
   WHERE
     per.Email = @Email;
@@ -240,9 +240,9 @@ BEGIN
     per.Email
   FROM
     SoftwareArchitecture.PatientVisit pv
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id;
 END;
 GO
@@ -270,9 +270,9 @@ BEGIN
     per.Email
   FROM
     SoftwareArchitecture.PatientVisit pv
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id
   WHERE
     pv.Id = @VisitId;
@@ -302,9 +302,9 @@ BEGIN
     per.Email
   FROM
     SoftwareArchitecture.PatientVisit pv
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-  INNER JOIN
+    INNER JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id
   WHERE
     pv.PatientId = @PatientId;
@@ -341,16 +341,17 @@ BEGIN
     doc.Name AS DoctorName
   FROM
     SoftwareArchitecture.MedicalHistory mh
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
-  LEFT JOIN
-    SoftwareArchitecture.Person doc ON e.Id = doc.Id; -- join person to get doctor
+    LEFT JOIN
+    SoftwareArchitecture.Person doc ON e.Id = doc.Id;
+-- join person to get doctor
 END;
 GO
 
@@ -385,16 +386,17 @@ BEGIN
     doc.Name AS DoctorName
   FROM
     SoftwareArchitecture.MedicalHistory mh
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
-  LEFT JOIN
-    SoftwareArchitecture.Person doc ON e.Id = doc.Id -- join person to get doctor
+    LEFT JOIN
+    SoftwareArchitecture.Person doc ON e.Id = doc.Id
+  -- join person to get doctor
   WHERE
     mh.Id = @MedicalHistoryId;
 END;
@@ -431,16 +433,17 @@ BEGIN
     doc.Name AS DoctorName
   FROM
     SoftwareArchitecture.MedicalHistory mh
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
-  LEFT JOIN
-    SoftwareArchitecture.Person doc ON e.Id = doc.Id -- join person to get doctor
+    LEFT JOIN
+    SoftwareArchitecture.Person doc ON e.Id = doc.Id
+  -- join person to get doctor
   WHERE
     pv.PatientId = @PatientId;
 END;
@@ -477,16 +480,17 @@ BEGIN
     doc.Name AS DoctorName
   FROM
     SoftwareArchitecture.MedicalHistory mh
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
-  LEFT JOIN
+    LEFT JOIN
     SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
-  LEFT JOIN
-    SoftwareArchitecture.Person doc ON e.Id = doc.Id -- join person to get doctor
+    LEFT JOIN
+    SoftwareArchitecture.Person doc ON e.Id = doc.Id
+  -- join person to get doctor
   WHERE
     mh.PatientVisitId = @PatientVisitId;
 END;

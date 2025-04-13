@@ -3,6 +3,10 @@ using BTL_SA.Modules.StaffMana.Infrastructure;
 using BTL_SA.Modules.StaffMana.Application;
 using BTL_SA.Modules.StaffMana.Facade;
 
+using BTL_SA.Modules.PatientMana.Infrastructure;
+using BTL_SA.Modules.PatientMana.Application;
+using BTL_SA.Modules.PatientMana.Facade;
+
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +23,16 @@ builder.Services.AddSingleton<IAssignmentService, AssignmentService>();
 builder.Services.AddSingleton<ICredentialService, CredentialService>();
 
 builder.Services.AddSingleton<FacadeStaffInformationManagement>();
+// patient contianer
+builder.Services.AddSingleton<IPatientRepository, PatientRepository>();
+builder.Services.AddSingleton<IPatientService, PatientService>();
+builder.Services.AddSingleton<FacadePatientInformationManagement>();
+
+builder.Services.AddSingleton<IPatientVisitRepository, PatientVisitRepository>();
+builder.Services.AddSingleton<IPatientVisitService, PatientVisitService>();
+builder.Services.AddSingleton<FacadeVisitInformationManagement>();
+
+
 // Add Swagger services
 builder.Services.AddSwaggerGen(c =>
 {
