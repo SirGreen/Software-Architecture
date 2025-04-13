@@ -75,7 +75,7 @@ BEGIN
   INSERT INTO SoftwareArchitecture.Patient
     (Id, HealthInsuranceId)
   VALUES
-    (@NewPatientId, @HealthInsuranceId);
+    (@NewPersonId, @HealthInsuranceId);
 
   SET @NewPatientId = @NewPersonId
 

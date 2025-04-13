@@ -64,7 +64,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 return null;
             }
         }
-        public Patient FindByEmail(int id) {
+        public Patient FindByEmail(string email) {
             var parameters = new Dictionary<string, object>
             {
                 { "@Email", id }

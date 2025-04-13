@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BTL_SA.Infrastructure;
 using BTL_SA.Modules.PatientMana.Domain.Models;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace BTL_SA.Modules.PatientMana.Infrastructure
 {
-    public class MedicalHistoryRepository
+    public class MedicalHistoryRepository(DatabaseService dbService) : IMedicalHistoryRepository
     {
+        private readonly DatabaseService _dbService = dbService;
         public List<MedicalHistoryView> findAll() {
             var parameters = new Dictionary<string, object>();
             if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetAllMedicalHistory", parameters) is not SqlDataReader result)
@@ -188,7 +192,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             var parameter = new Dictionary<string, object>
             {
                 { "@MedicalHistoryId", id}
-            }
+            };
             try { _dbService.DataBaseInquiry("SoftwareArchitecture.DeleteMedicalHistory", parameters); }
             catch (SqlException ex)
             {

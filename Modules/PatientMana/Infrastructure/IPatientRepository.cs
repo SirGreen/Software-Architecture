@@ -6,7 +6,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
     {
         List<Patient> FindAll();
         Patient FindById(int id);
-        Patient FindByEmail(int id);
+        Patient FindByEmail(string email);
         int Create(PatientForm patient);
         int Update(int id, PatientForm patient);
         int Delete(int id);
