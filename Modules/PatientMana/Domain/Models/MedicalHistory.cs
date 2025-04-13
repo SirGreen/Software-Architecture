@@ -24,11 +24,10 @@ namespace BTL_SA.Modules.PatientMana.Domain.Models
         public Employee? Doctor { get; set; }
     }
 
-    public class MedicalHistoryView : PatientVisit {
+    public class MedicalHistoryView {
         public int Id { get; set; }
         public int? PatientVisitId { get; set; }
         public int? DoctorId { get; set; }
-        public string? DoctorName { get; set; }
         public string? Department { get; set; }
         public string? ReasonForVisit { get; set; }
         public string? Diagnosis { get; set; }

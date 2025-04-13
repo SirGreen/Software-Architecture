@@ -230,20 +230,9 @@ BEGIN
     pv.Id,
     pv.PatientId,
     pv.VisitDate,
-    pv.Notes,
-    p.HealthInsuranceId,
-    per.Name AS PatientName,
-    per.Gender,
-    per.PhoneNumber,
-    per.Address,
-    per.DateOfBirth,
-    per.Email
+    pv.Notes
   FROM
     SoftwareArchitecture.PatientVisit pv
-    INNER JOIN
-    SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-    INNER JOIN
-    SoftwareArchitecture.Person per ON p.Id = per.Id;
 END;
 GO
 
@@ -260,20 +249,9 @@ BEGIN
     pv.Id AS VisitId,
     pv.PatientId,
     pv.VisitDate,
-    pv.Notes,
-    p.HealthInsuranceId,
-    per.Name AS PatientName,
-    per.Gender,
-    per.PhoneNumber,
-    per.Address,
-    per.DateOfBirth,
-    per.Email
+    pv.Notes
   FROM
     SoftwareArchitecture.PatientVisit pv
-    INNER JOIN
-    SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-    INNER JOIN
-    SoftwareArchitecture.Person per ON p.Id = per.Id
   WHERE
     pv.Id = @VisitId;
 END;
@@ -292,20 +270,9 @@ BEGIN
     pv.Id AS VisitId,
     pv.PatientId,
     pv.VisitDate,
-    pv.Notes,
-    p.HealthInsuranceId,
-    per.Name AS PatientName,
-    per.Gender,
-    per.PhoneNumber,
-    per.Address,
-    per.DateOfBirth,
-    per.Email
+    pv.Notes
   FROM
     SoftwareArchitecture.PatientVisit pv
-    INNER JOIN
-    SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-    INNER JOIN
-    SoftwareArchitecture.Person per ON p.Id = per.Id
   WHERE
     pv.PatientId = @PatientId;
 END;
@@ -329,28 +296,9 @@ BEGIN
     mh.Treatment,
     mh.PrescribedMedication,
     mh.CreatedDate,
-    mh.ModifiedDate,
-    pv.PatientId,
-    p.HealthInsuranceId,
-    per.Name AS PatientName,
-    per.Gender,
-    per.PhoneNumber,
-    per.Address,
-    per.DateOfBirth,
-    per.Email,
-    doc.Name AS DoctorName
+    mh.ModifiedDate
   FROM
     SoftwareArchitecture.MedicalHistory mh
-    LEFT JOIN
-    SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
-    LEFT JOIN
-    SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-    LEFT JOIN
-    SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
-    LEFT JOIN
-    SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
-    LEFT JOIN
-    SoftwareArchitecture.Person doc ON e.Id = doc.Id;
 -- join person to get doctor
 END;
 GO
@@ -374,29 +322,9 @@ BEGIN
     mh.Treatment,
     mh.PrescribedMedication,
     mh.CreatedDate,
-    mh.ModifiedDate,
-    pv.PatientId,
-    p.HealthInsuranceId,
-    per.Name AS PatientName,
-    per.Gender,
-    per.PhoneNumber,
-    per.Address,
-    per.DateOfBirth,
-    per.Email,
-    doc.Name AS DoctorName
+    mh.ModifiedDate
   FROM
     SoftwareArchitecture.MedicalHistory mh
-    LEFT JOIN
-    SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
-    LEFT JOIN
-    SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-    LEFT JOIN
-    SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
-    LEFT JOIN
-    SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
-    LEFT JOIN
-    SoftwareArchitecture.Person doc ON e.Id = doc.Id
-  -- join person to get doctor
   WHERE
     mh.Id = @MedicalHistoryId;
 END;
@@ -421,28 +349,13 @@ BEGIN
     mh.Treatment,
     mh.PrescribedMedication,
     mh.CreatedDate,
-    mh.ModifiedDate,
-    pv.PatientId,
-    p.HealthInsuranceId,
-    per.Name AS PatientName,
-    per.Gender,
-    per.PhoneNumber,
-    per.Address,
-    per.DateOfBirth,
-    per.Email,
-    doc.Name AS DoctorName
+    mh.ModifiedDate
   FROM
     SoftwareArchitecture.MedicalHistory mh
     LEFT JOIN
     SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
     LEFT JOIN
     SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
-    LEFT JOIN
-    SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
-    LEFT JOIN
-    SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
-    LEFT JOIN
-    SoftwareArchitecture.Person doc ON e.Id = doc.Id
   -- join person to get doctor
   WHERE
     pv.PatientId = @PatientId;
@@ -707,12 +620,6 @@ EXEC SoftwareArchitecture.EditPatient
   @DateOfBirth = '1980-01-01',
   @Email = 'johnathan.doe@example.com',
   @HealthInsuranceId = 'HI12345-UPDATED';
-
--- Mock execution to update patient visit
-EXEC SoftwareArchitecture.EditPatientVisit
-  @VisitId = 3,
-  @VisitDate = '2023-01-02',
-  @Notes = 'Updated routine check-up notes';
 
 -- Mock execution to update medical history
 EXEC SoftwareArchitecture.EditMedicalHistory

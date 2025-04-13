@@ -12,7 +12,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
     public class MedicalHistoryRepository(DatabaseService dbService) : IMedicalHistoryRepository
     {
         private readonly DatabaseService _dbService = dbService;
-        public List<MedicalHistoryView> findAll() {
+        public List<MedicalHistoryView> FindAll() {
             var parameters = new Dictionary<string, object>();
             if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetAllMedicalHistory", parameters) is not SqlDataReader result)
                 return [];
@@ -22,34 +22,22 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             {
                 var medicalHistory = new MedicalHistoryView
                 {
-                    Id = reader.GetInt32(reader.GetOrdinal("MedicalHistoryId")),
-                    PatientVisitId = reader.GetInt32(reader.GetOrdinal("PatientVisitId")),
-                    DoctorId = reader.GetInt32(reader.GetOrdinal("DoctorId")),
-                    Department = reader.GetString(reader.GetOrdinal("Department")),
-                    ReasonForVisit = reader.GetString(reader.GetOrdinal("ReasonForVisit")),
-                    Diagnosis = reader.GetString(reader.GetOrdinal("Diagnosis")),
-                    Treatment = reader.GetString(reader.GetOrdinal("Treatment")),
-                    PrescribedMedication = reader.GetString(reader.GetOrdinal("PrescribedMedication")),
+                    Id = reader.IsDBNull(reader.GetOrdinal("MedicalHistoryId")) ? 0 : reader.GetInt32(reader.GetOrdinal("MedicalHistoryId")),
+                    PatientVisitId = reader.IsDBNull(reader.GetOrdinal("PatientVisitId")) ? 0 : reader.GetInt32(reader.GetOrdinal("PatientVisitId")),
+                    DoctorId = reader.IsDBNull(reader.GetOrdinal("DoctorId")) ? 0 : reader.GetInt32(reader.GetOrdinal("DoctorId")),
+                    Department = reader.IsDBNull(reader.GetOrdinal("Department")) ? null : reader.GetString(reader.GetOrdinal("Department")),
+                    ReasonForVisit = reader.IsDBNull(reader.GetOrdinal("ReasonForVisit")) ? null : reader.GetString(reader.GetOrdinal("ReasonForVisit")),
+                    Diagnosis = reader.IsDBNull(reader.GetOrdinal("Diagnosis")) ? null : reader.GetString(reader.GetOrdinal("Diagnosis")),
+                    Treatment = reader.IsDBNull(reader.GetOrdinal("Treatment")) ? null : reader.GetString(reader.GetOrdinal("Treatment")),
+                    PrescribedMedication = reader.IsDBNull(reader.GetOrdinal("PrescribedMedication")) ? null : reader.GetString(reader.GetOrdinal("PrescribedMedication")),
                     CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
                     ModifiedDate = reader.GetDateTime(reader.GetOrdinal("ModifiedDate")),
-
-                    PatientId = reader.GetInt32(reader.GetOrdinal("PatientId")),
-                    HealthInsuranceId = reader.GetString(reader.GetOrdinal("HealthInsuranceId")),
-
-                    PatientName = reader.GetString(reader.GetOrdinal("PatientName")),
-                    Gender = reader.GetBoolean(reader.GetOrdinal("Gender")),
-                    PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                    Address = reader.GetString(reader.GetOrdinal("Address")),
-                    DateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth")),
-                    Email = reader.GetString(reader.GetOrdinal("Email")),
-
-                    DoctorName = reader.GetString(reader.GetOrdinal("DoctorName"))
                 };
                 medicalHistories.Add(medicalHistory);
             }
             return medicalHistories;
         }
-        public MedicalHistoryView findById(int id) {
+        public MedicalHistoryView? FindById(int id) {
             var parameters = new Dictionary<string, object>
             {
                 { "@MedicalHistoryId", id }
@@ -62,8 +50,8 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 var medicalHistory = new MedicalHistoryView
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("MedicalHistoryId")),
-                    PatientVisitId = reader.GetInt32(reader.GetOrdinal("PatientVisitId")),
-                    DoctorId = reader.GetInt32(reader.GetOrdinal("DoctorId")),
+                    PatientVisitId = reader.IsDBNull(reader.GetOrdinal("PatientVisitId")) ? 0 : reader.GetInt32(reader.GetOrdinal("PatientVisitId")),
+                    DoctorId = reader.IsDBNull(reader.GetOrdinal("DoctorId")) ? 0 : reader.GetInt32(reader.GetOrdinal("DoctorId")),
                     Department = reader.GetString(reader.GetOrdinal("Department")),
                     ReasonForVisit = reader.GetString(reader.GetOrdinal("ReasonForVisit")),
                     Diagnosis = reader.GetString(reader.GetOrdinal("Diagnosis")),
@@ -71,18 +59,6 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                     PrescribedMedication = reader.GetString(reader.GetOrdinal("PrescribedMedication")),
                     CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
                     ModifiedDate = reader.GetDateTime(reader.GetOrdinal("ModifiedDate")),
-
-                    PatientId = reader.GetInt32(reader.GetOrdinal("PatientId")),
-                    HealthInsuranceId = reader.GetString(reader.GetOrdinal("HealthInsuranceId")),
-
-                    PatientName = reader.GetString(reader.GetOrdinal("PatientName")),
-                    Gender = reader.GetBoolean(reader.GetOrdinal("Gender")),
-                    PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                    Address = reader.GetString(reader.GetOrdinal("Address")),
-                    DateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth")),
-                    Email = reader.GetString(reader.GetOrdinal("Email")),
-
-                    DoctorName = reader.GetString(reader.GetOrdinal("DoctorName"))
                 };
                 return medicalHistory;
             }
@@ -92,7 +68,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 return null;
             }
         }
-        public List<MedicalHistoryView> findByPatientId(int id) {
+        public List<MedicalHistoryView>? FindByPatientId(int id) {
             var parameters = new Dictionary<string, object>
             {
                 { "@PatientId", id }
@@ -106,8 +82,8 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 var medicalHistory = new MedicalHistoryView
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("MedicalHistoryId")),
-                    PatientVisitId = reader.GetInt32(reader.GetOrdinal("PatientVisitId")),
-                    DoctorId = reader.GetInt32(reader.GetOrdinal("DoctorId")),
+                    PatientVisitId = reader.IsDBNull(reader.GetOrdinal("PatientVisitId")) ? 0 : reader.GetInt32(reader.GetOrdinal("PatientVisitId")),
+                    DoctorId = reader.IsDBNull(reader.GetOrdinal("DoctorId")) ? 0 : reader.GetInt32(reader.GetOrdinal("DoctorId")),
                     Department = reader.GetString(reader.GetOrdinal("Department")),
                     ReasonForVisit = reader.GetString(reader.GetOrdinal("ReasonForVisit")),
                     Diagnosis = reader.GetString(reader.GetOrdinal("Diagnosis")),
@@ -115,18 +91,6 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                     PrescribedMedication = reader.GetString(reader.GetOrdinal("PrescribedMedication")),
                     CreatedDate = reader.GetDateTime(reader.GetOrdinal("CreatedDate")),
                     ModifiedDate = reader.GetDateTime(reader.GetOrdinal("ModifiedDate")),
-
-                    PatientId = reader.GetInt32(reader.GetOrdinal("PatientId")),
-                    HealthInsuranceId = reader.GetString(reader.GetOrdinal("HealthInsuranceId")),
-
-                    PatientName = reader.GetString(reader.GetOrdinal("PatientName")),
-                    Gender = reader.GetBoolean(reader.GetOrdinal("Gender")),
-                    PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                    Address = reader.GetString(reader.GetOrdinal("Address")),
-                    DateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth")),
-                    Email = reader.GetString(reader.GetOrdinal("Email")),
-
-                    DoctorName = reader.GetString(reader.GetOrdinal("DoctorName"))
                 };
                 medicalHistories.Add(medicalHistory);
             }
@@ -135,8 +99,8 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
         public int Create(MedicalHistoryForm medicalHistory) {
             var parameters = new Dictionary<string, object>
             {
-                { "@PatientVisitId", medicalHistory.PatientVisitId },
-                { "@DoctorId", medicalHistory.DoctorId },
+                { "@PatientVisitId", medicalHistory.PatientVisitId ?? 0 },
+                { "@DoctorId", medicalHistory.DoctorId ?? 0 },
                 { "@Department", medicalHistory.Department ?? string.Empty },
                 { "@ReasonForVisit", medicalHistory.ReasonForVisit ?? string.Empty },
                 { "@Diagnosis", medicalHistory.Diagnosis ?? string.Empty },
@@ -169,8 +133,8 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             var parameters = new Dictionary<string, object>
             {
                 { "@MedicalHistoryId", id },
-                { "@PatientVisitId", medicalHistory.PatientVisitId },
-                { "@DoctorId", medicalHistory.DoctorId },
+                { "@PatientVisitId", medicalHistory.PatientVisitId ?? 0 },
+                { "@DoctorId", medicalHistory.DoctorId ?? 0 },
                 { "@Department", medicalHistory.Department ?? string.Empty },
                 { "@ReasonForVisit", medicalHistory.ReasonForVisit ?? string.Empty },
                 { "@Diagnosis", medicalHistory.Diagnosis ?? string.Empty },
@@ -189,7 +153,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             }
         }
         public int Delete(int id) {
-            var parameter = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 { "@MedicalHistoryId", id}
             };

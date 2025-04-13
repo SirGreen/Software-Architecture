@@ -33,7 +33,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             }
             return patients;
         }
-        public Patient FindById(int id) {
+        public Patient? FindById(int id) {
             var parameters = new Dictionary<string, object>
             {
                 { "@PatientId", id }
@@ -64,10 +64,10 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 return null;
             }
         }
-        public Patient FindByEmail(string email) {
+        public Patient? FindByEmail(string email) {
             var parameters = new Dictionary<string, object>
             {
-                { "@Email", id }
+                { "@Email", email }
             };
             if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetPatientByEmail", parameters) is not SqlDataReader result)
                 return null;
@@ -91,7 +91,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
             }
             else
             {
-                Console.WriteLine("No data found for Patient with ID: " + id);
+                Console.WriteLine("No data found for Patient with email: " + email);
                 return null;
             }
         }

@@ -8,7 +8,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
     public class PatientVisitRepository(DatabaseService dbService) : IPatientVisitRepository
     {
         private readonly DatabaseService _dbService = dbService;
-        public List<PatientVisitView> findAll() {
+        public List<PatientVisitView>? FindAll() {
             var parameters = new Dictionary<string, object>();
             if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetAllPatientVisits", parameters) is not SqlDataReader result)
                 return [];
@@ -19,24 +19,15 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 var patientVisit = new PatientVisitView
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                    PatientId = reader.GetInt32(reader.GetOrdinal("PatientId")),
+                    PatientId = reader.IsDBNull(reader.GetOrdinal("PatientId")) ? 0 : reader.GetInt32(reader.GetOrdinal("PatientId")),
                     VisitDate = reader.GetDateTime(reader.GetOrdinal("VisitDate")),
-                    Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
-                    
-                    Name = reader.GetString(reader.GetOrdinal("PatientName")),
-                    Gender = reader.GetBoolean(reader.GetOrdinal("Gender")),
-                    PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                    Address = reader.GetString(reader.GetOrdinal("Address")),
-                    DateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth")),
-                    Email = reader.GetString(reader.GetOrdinal("Email")),
-                    
-                    HealthInsuranceId = reader.GetString(reader.GetOrdinal("HealthInsuranceId"))
+                    Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes"))
                 };
                 patientVisits.Add(patientVisit);
             }
             return patientVisits;
         }
-        public PatientVisitView findById(int id) {
+        public PatientVisitView? FindById(int id) {
             var parameters = new Dictionary<string, object>
             {
                 { "@VisitId", id }
@@ -49,18 +40,9 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 var patientVisit = new PatientVisitView
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("VisitId")),
-                    PatientId = reader.GetInt32(reader.GetOrdinal("PatientId")),
+                    PatientId = reader.IsDBNull(reader.GetOrdinal("PatientId")) ? 0 :  reader.GetInt32(reader.GetOrdinal("PatientId")),
                     VisitDate = reader.GetDateTime(reader.GetOrdinal("VisitDate")),
-                    Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
-                    
-                    Name = reader.GetString(reader.GetOrdinal("PatientName")),
-                    Gender = reader.GetBoolean(reader.GetOrdinal("Gender")),
-                    PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                    Address = reader.GetString(reader.GetOrdinal("Address")),
-                    DateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth")),
-                    Email = reader.GetString(reader.GetOrdinal("Email")),
-                    
-                    HealthInsuranceId = reader.GetString(reader.GetOrdinal("HealthInsuranceId"))
+                    Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes"))
                 };
                 return patientVisit;
             }
@@ -70,7 +52,7 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 return null;
             }
         }
-        public List<PatientVisitView> findByPatientId(int id) {
+        public List<PatientVisitView>? FindByPatientId(int id) {
             var parameters = new Dictionary<string, object> {
                 { "@PatientId", id}
             };
@@ -83,18 +65,9 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
                 var patientVisit = new PatientVisitView
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("VisitId")),
-                    PatientId = reader.GetInt32(reader.GetOrdinal("PatientId")),
+                    PatientId = reader.IsDBNull(reader.GetOrdinal("PatientId")) ? 0 :  reader.GetInt32(reader.GetOrdinal("PatientId")),
                     VisitDate = reader.GetDateTime(reader.GetOrdinal("VisitDate")),
-                    Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
-                    
-                    Name = reader.GetString(reader.GetOrdinal("PatientName")),
-                    Gender = reader.GetBoolean(reader.GetOrdinal("Gender")),
-                    PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                    Address = reader.GetString(reader.GetOrdinal("Address")),
-                    DateOfBirth = reader.GetDateTime(reader.GetOrdinal("DateOfBirth")),
-                    Email = reader.GetString(reader.GetOrdinal("Email")),
-                    
-                    HealthInsuranceId = reader.GetString(reader.GetOrdinal("HealthInsuranceId"))
+                    Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes"))
                 };
                 patientVisits.Add(patientVisit);
             }

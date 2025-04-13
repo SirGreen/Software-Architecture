@@ -8,9 +8,9 @@ namespace BTL_SA.Modules.PatientMana.Infrastructure
 {
     public interface IPatientVisitRepository
     {
-        List<PatientVisitView> findAll();
-        PatientVisitView findById(int id);
-        List<PatientVisitView> findByPatientId(int id);
+        List<PatientVisitView>? FindAll();
+        PatientVisitView? FindById(int id);
+        List<PatientVisitView>? FindByPatientId(int id);
         int Create(PatientVisitForm patient);
         int Update(int id, PatientVisitForm patient);
         int Delete(int id);

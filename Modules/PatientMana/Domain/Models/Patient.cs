@@ -11,7 +11,7 @@ namespace BTL_SA.Modules.PatientMana.Domain.Models
         public string? HealthInsuranceId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
-        public List<PatientVisit> PatientVisit { get; set; }
+        public List<PatientVisit> PatientVisit { get; set; } = new List<PatientVisit>();
     }
 
     public class PatientViewModel : Person {
@@ -36,33 +36,39 @@ namespace BTL_SA.Modules.PatientMana.Domain.Models
         }
     }
 
-    public class PatientForm : Person {
-        public int Id { get; set; }  // Thêm property Id
+    public class PatientForm {
+        // public int Id { get; set; }  // Thêm property Id
+        public string? Name { get; set; }
+        public bool Gender { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Address { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string? Email { get; set; }
         public string? HealthInsuranceId { get; set; }
 
-        [System.Text.Json.Serialization.JsonConstructor]
-        public PatientForm(int id, string name, bool gender, string phoneNumber, string address, DateTime dateOfBirth, string email, string healthInsuranceId)
-        {
-            Id = id;
-            Name = name;
-            Gender = gender;
-            PhoneNumber = phoneNumber;
-            Address = address;
-            DateOfBirth = dateOfBirth;
-            Email = email;
-            HealthInsuranceId = healthInsuranceId;
-        }
+        // [System.Text.Json.Serialization.JsonConstructor]
+        // public PatientForm(int id, string name, bool gender, string phoneNumber, string address, DateTime dateOfBirth, string email, string healthInsuranceId)
+        // {
+        //     Id = id;
+        //     Name = name;
+        //     Gender = gender;
+        //     PhoneNumber = phoneNumber;
+        //     Address = address;
+        //     DateOfBirth = dateOfBirth;
+        //     Email = email;
+        //     HealthInsuranceId = healthInsuranceId;
+        // }
 
-        public PatientForm(Patient patient)
-        {
-            Id = patient.Id;
-            Name = patient.Name;
-            Gender = patient.Gender;
-            PhoneNumber = patient.PhoneNumber;
-            Address = patient.Address;
-            DateOfBirth = patient.DateOfBirth;
-            Email = patient.Email;
-            HealthInsuranceId = patient.HealthInsuranceId ?? string.Empty;
-        }
+        // public PatientForm(Patient patient)
+        // {
+        //     Id = patient.Id;
+        //     Name = patient.Name;
+        //     Gender = patient.Gender;
+        //     PhoneNumber = patient.PhoneNumber;
+        //     Address = patient.Address;
+        //     DateOfBirth = patient.DateOfBirth;
+        //     Email = patient.Email;
+        //     HealthInsuranceId = patient.HealthInsuranceId ?? string.Empty;
+        // }
     }
 }
