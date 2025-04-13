@@ -1,0 +1,649 @@
+DROP TABLE IF EXISTS SoftwareArchitecture.Patient;
+DROP TABLE IF EXISTS SoftwareArchitecture.PatientVisit;
+DROP TABLE IF EXISTS SoftwareArchitecture.MedicalHistory;
+GO
+
+CREATE TABLE SoftwareArchitecture.Patient
+(
+  Id INT PRIMARY KEY,
+  HealthInsuranceId NVARCHAR(255),
+  CreatedDate DATETIME DEFAULT GETDATE(),
+  ModifiedDate DATETIME DEFAULT GETDATE(),
+  FOREIGN KEY (Id) REFERENCES SoftwareArchitecture.Person(Id)
+);
+GO
+
+CREATE TABLE SoftwareArchitecture.PatientVisit
+(
+  Id INT IDENTITY(1,1) PRIMARY KEY,
+  PatientId INT,
+  VisitDate DATETIME NOT NULL DEFAULT GETDATE(),
+  Notes NVARCHAR(MAX),
+  FOREIGN KEY (PatientId) REFERENCES SoftwareArchitecture.Patient(Id)
+  ON DELETE SET NULL
+);
+GO
+
+CREATE TABLE SoftwareArchitecture.MedicalHistory
+(
+  Id INT IDENTITY(1,1) PRIMARY KEY,
+  PatientVisitId INT NULL,
+  DoctorId INT NULL,
+  Department NVARCHAR(255) NOT NULL,
+  ReasonForVisit NVARCHAR(MAX),
+  Diagnosis NVARCHAR(MAX),
+  Treatment NVARCHAR(MAX),
+  PrescribedMedication NVARCHAR(MAX),
+  CreatedDate DATETIME DEFAULT GETDATE(),
+  ModifiedDate DATETIME DEFAULT GETDATE(),
+  FOREIGN KEY (PatientVisitId) REFERENCES SoftwareArchitecture.PatientVisit(Id)
+    ON DELETE SET NULL,
+  FOREIGN KEY (DoctorId) REFERENCES SoftwareArchitecture.Employee(Id)
+    ON DELETE SET NULL
+);
+GO
+
+-- Procedure add patient
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.AddPatient
+GO
+CREATE PROCEDURE SoftwareArchitecture.AddPatient
+  @Name NVARCHAR(MAX),
+  @Gender BIT,
+  @PhoneNumber NVARCHAR(MAX),
+  @Address NVARCHAR(MAX),
+  @DateOfBirth DATE,
+  @Email NVARCHAR(MAX),
+  @HealthInsuranceId NVARCHAR(255),
+  @NewPatientId INT OUTPUT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  DECLARE @NewPersonId INT;
+
+  -- Add person
+  EXEC SoftwareArchitecture.AddPerson
+        @Name = @Name,
+        @Gender = @Gender,
+        @PhoneNumber = @PhoneNumber,
+        @Address = @Address,
+        @DateOfBirth = @DateOfBirth,
+        @Email = @Email,
+        @NewPersonId = @NewPersonId OUTPUT;
+
+  -- Add patient
+  INSERT INTO SoftwareArchitecture.Patient
+    (Id, HealthInsuranceId)
+  VALUES
+    (@NewPersonId, @HealthInsuranceId);
+
+  SET @NewPatientId = @NewPersonId
+
+END;
+GO
+
+-- Procedure add Patient Visit
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.AddPatientVisit
+GO
+CREATE PROCEDURE SoftwareArchitecture.AddPatientVisit
+  @PatientId INT,
+  @VisitDate DATETIME,
+  @Notes NVARCHAR(MAX),
+  @NewVisitId INT OUTPUT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  -- Add patient visit
+  INSERT INTO SoftwareArchitecture.PatientVisit
+    (PatientId, VisitDate, Notes)
+  VALUES
+    (@PatientId, @VisitDate, @Notes);
+
+  -- Get the newly created Visit ID
+  SET @NewVisitId = SCOPE_IDENTITY();
+
+END;
+GO
+
+-- Procedure add medical history
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.AddMedicalHistory
+GO
+CREATE PROCEDURE SoftwareArchitecture.AddMedicalHistory
+  @PatientVisitId INT,
+  @DoctorId INT,
+  @Department NVARCHAR(100),
+  @ReasonForVisit NVARCHAR(255),
+  @Diagnosis NVARCHAR(MAX),
+  @Treatment NVARCHAR(MAX),
+  @PrescribedMedication NVARCHAR(MAX),
+  @NewMedicalHistoryId INT OUTPUT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  -- Add medical history
+  INSERT INTO SoftwareArchitecture.MedicalHistory
+    (PatientVisitId, DoctorId, Department, ReasonForVisit, Diagnosis, Treatment, PrescribedMedication)
+  VALUES
+    (@PatientVisitId, @DoctorId, @Department, @ReasonForVisit, @Diagnosis, @Treatment, @PrescribedMedication);
+
+  -- Get the newly created Medical History ID
+  SET @NewMedicalHistoryId = SCOPE_IDENTITY();
+
+END;
+GO
+
+-- Procedure get all patients
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetAllPatients
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetAllPatients
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    p.Id AS PatientId,
+    p.HealthInsuranceId,
+    p.CreatedDate,
+    p.ModifiedDate,
+    per.Name,
+    per.Gender,
+    per.PhoneNumber,
+    per.Address,
+    per.DateOfBirth,
+    per.Email
+  FROM
+    SoftwareArchitecture.Patient p
+    INNER JOIN
+    SoftwareArchitecture.Person per ON p.Id = per.Id;
+END;
+GO
+
+-- Procedure get patient by Id
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetPatientById
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetPatientById
+  @PatientId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    p.Id,
+    p.HealthInsuranceId,
+    p.CreatedDate,
+    p.ModifiedDate,
+    per.Name,
+    per.Gender,
+    per.PhoneNumber,
+    per.Address,
+    per.DateOfBirth,
+    per.Email
+  FROM
+    SoftwareArchitecture.Patient p
+    INNER JOIN
+    SoftwareArchitecture.Person per ON p.Id = per.Id
+  WHERE
+    p.Id = @PatientId;
+END;
+GO
+
+-- Procedure get patient by Email
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetPatientByEmail
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetPatientByEmail
+  @Email NVARCHAR(MAX)
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    p.Id,
+    p.HealthInsuranceId,
+    p.CreatedDate,
+    p.ModifiedDate,
+    per.Name,
+    per.Gender,
+    per.PhoneNumber,
+    per.Address,
+    per.DateOfBirth,
+    per.Email
+  FROM
+    SoftwareArchitecture.Patient p
+    INNER JOIN
+    SoftwareArchitecture.Person per ON p.Id = per.Id
+  WHERE
+    per.Email = @Email;
+END;
+GO
+
+-- Procedure get all patient visits
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetAllPatientVisits
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetAllPatientVisits
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    pv.Id,
+    pv.PatientId,
+    pv.VisitDate,
+    pv.Notes
+  FROM
+    SoftwareArchitecture.PatientVisit pv
+END;
+GO
+
+-- Procedure get patient visit by id
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetPatientVisitById
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetPatientVisitById
+  @VisitId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    pv.Id AS VisitId,
+    pv.PatientId,
+    pv.VisitDate,
+    pv.Notes
+  FROM
+    SoftwareArchitecture.PatientVisit pv
+  WHERE
+    pv.Id = @VisitId;
+END;
+GO
+
+-- Procedure get patient visits by patient id
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetPatientVisitsByPatientId
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetPatientVisitsByPatientId
+  @PatientId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    pv.Id AS VisitId,
+    pv.PatientId,
+    pv.VisitDate,
+    pv.Notes
+  FROM
+    SoftwareArchitecture.PatientVisit pv
+  WHERE
+    pv.PatientId = @PatientId;
+END;
+GO
+
+-- Procedure get all medical history
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetAllMedicalHistory
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetAllMedicalHistory
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    mh.Id AS MedicalHistoryId,
+    mh.PatientVisitId,
+    mh.DoctorId,
+    mh.Department,
+    mh.ReasonForVisit,
+    mh.Diagnosis,
+    mh.Treatment,
+    mh.PrescribedMedication,
+    mh.CreatedDate,
+    mh.ModifiedDate
+  FROM
+    SoftwareArchitecture.MedicalHistory mh
+-- join person to get doctor
+END;
+GO
+
+-- Procedure get medical histories by id
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetMedicalHistoryById
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetMedicalHistoryById
+  @MedicalHistoryId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    mh.Id AS MedicalHistoryId,
+    mh.PatientVisitId,
+    mh.DoctorId,
+    mh.Department,
+    mh.ReasonForVisit,
+    mh.Diagnosis,
+    mh.Treatment,
+    mh.PrescribedMedication,
+    mh.CreatedDate,
+    mh.ModifiedDate
+  FROM
+    SoftwareArchitecture.MedicalHistory mh
+  WHERE
+    mh.Id = @MedicalHistoryId;
+END;
+GO
+
+-- Procedure get medical history by patient id
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetMedicalHistoryByPatientId
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetMedicalHistoryByPatientId
+  @PatientId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    mh.Id AS MedicalHistoryId,
+    mh.PatientVisitId,
+    mh.DoctorId,
+    mh.Department,
+    mh.ReasonForVisit,
+    mh.Diagnosis,
+    mh.Treatment,
+    mh.PrescribedMedication,
+    mh.CreatedDate,
+    mh.ModifiedDate
+  FROM
+    SoftwareArchitecture.MedicalHistory mh
+    LEFT JOIN
+    SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
+    LEFT JOIN
+    SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
+  -- join person to get doctor
+  WHERE
+    pv.PatientId = @PatientId;
+END;
+GO
+
+-- Procedure get medical histories by patient visit id
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.GetMedicalHistoryByPatientVisitId
+GO
+CREATE PROCEDURE SoftwareArchitecture.GetMedicalHistoryByPatientVisitId
+  @PatientVisitId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  SELECT
+    mh.Id AS MedicalHistoryId,
+    mh.PatientVisitId,
+    mh.DoctorId,
+    mh.Department,
+    mh.ReasonForVisit,
+    mh.Diagnosis,
+    mh.Treatment,
+    mh.PrescribedMedication,
+    mh.CreatedDate,
+    mh.ModifiedDate,
+    pv.PatientId,
+    p.HealthInsuranceId,
+    per.Name AS PatientName,
+    per.Gender,
+    per.PhoneNumber,
+    per.Address,
+    per.DateOfBirth,
+    per.Email,
+    doc.Name AS DoctorName
+  FROM
+    SoftwareArchitecture.MedicalHistory mh
+    LEFT JOIN
+    SoftwareArchitecture.PatientVisit pv ON mh.PatientVisitId = pv.Id
+    LEFT JOIN
+    SoftwareArchitecture.Patient p ON pv.PatientId = p.Id
+    LEFT JOIN
+    SoftwareArchitecture.Person per ON p.Id = per.Id -- join person to get patient
+    LEFT JOIN
+    SoftwareArchitecture.Employee e ON mh.DoctorId = e.Id
+    LEFT JOIN
+    SoftwareArchitecture.Person doc ON e.Id = doc.Id
+  -- join person to get doctor
+  WHERE
+    mh.PatientVisitId = @PatientVisitId;
+END;
+GO
+
+-- Procedure edit patient
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.EditPatient
+GO
+CREATE PROCEDURE SoftwareArchitecture.EditPatient
+  @PatientId INT,
+  @Name NVARCHAR(MAX),
+  @Gender BIT,
+  @PhoneNumber NVARCHAR(MAX),
+  @Address NVARCHAR(MAX),
+  @DateOfBirth DATE,
+  @Email NVARCHAR(MAX),
+  @HealthInsuranceId NVARCHAR(255)
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  -- Update person details
+  UPDATE SoftwareArchitecture.Person
+  SET
+    Name = @Name,
+    Gender = @Gender,
+    PhoneNumber = @PhoneNumber,
+    Address = @Address,
+    DateOfBirth = @DateOfBirth,
+    Email = @Email
+  WHERE
+    Id = @PatientId;
+
+  -- Update patient details
+  UPDATE SoftwareArchitecture.Patient
+  SET
+    HealthInsuranceId = @HealthInsuranceId,
+    ModifiedDate = GETDATE()
+  WHERE
+    Id = @PatientId;
+END;
+GO
+
+-- Procedure edit patient visit
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.EditPatientVisit
+GO
+CREATE PROCEDURE SoftwareArchitecture.EditPatientVisit
+  @VisitId INT,
+  @PatientId INT,
+  @VisitDate DATETIME,
+  @Notes NVARCHAR(MAX)
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  UPDATE SoftwareArchitecture.PatientVisit
+  SET
+    PatientId = @PatientId,
+    VisitDate = @VisitDate,
+    Notes = @Notes
+  WHERE
+    Id = @VisitId;
+END;
+GO
+
+-- Procedure edit medical history
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.EditMedicalHistory
+GO
+CREATE PROCEDURE SoftwareArchitecture.EditMedicalHistory
+  @MedicalHistoryId INT,
+  @PatientVisitId INT,
+  @DoctorId INT,
+  @Department NVARCHAR(255),
+  @ReasonForVisit NVARCHAR(MAX),
+  @Diagnosis NVARCHAR(MAX),
+  @Treatment NVARCHAR(MAX),
+  @PrescribedMedication NVARCHAR(MAX)
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  UPDATE SoftwareArchitecture.MedicalHistory
+  SET
+    PatientVisitId = @PatientVisitId,
+    DoctorId = @DoctorId,
+    Department = @Department,
+    ReasonForVisit = @ReasonForVisit,
+    Diagnosis = @Diagnosis,
+    Treatment = @Treatment,
+    PrescribedMedication = @PrescribedMedication,
+    ModifiedDate = GETDATE()
+  WHERE
+    Id = @MedicalHistoryId;
+END;
+GO
+
+-- Procedure delete patient
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.DeletePatient
+GO
+CREATE PROCEDURE SoftwareArchitecture.DeletePatient
+  @PatientId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  -- Delete the patient record
+  DELETE FROM SoftwareArchitecture.Patient
+  WHERE Id = @PatientId;
+
+  -- Delete the person record
+  DELETE FROM SoftwareArchitecture.Person
+  WHERE Id = @PatientId;
+END;
+GO
+
+-- Procedure delete patient visit
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.DeletePatientVisit
+GO
+CREATE PROCEDURE SoftwareArchitecture.DeletePatientVisit
+  @VisitId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  -- Delete the patient visit record
+  DELETE FROM SoftwareArchitecture.PatientVisit
+  WHERE Id = @VisitId;
+END;
+GO
+
+-- Procedure delete medical history
+DROP PROCEDURE IF EXISTS SoftwareArchitecture.DeleteMedicalHistory
+GO
+CREATE PROCEDURE SoftwareArchitecture.DeleteMedicalHistory
+  @MedicalHistoryId INT
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  -- Delete the medical history record
+  DELETE FROM SoftwareArchitecture.MedicalHistory
+  WHERE Id = @MedicalHistoryId;
+END;
+GO
+
+-- Insert mock data into Patient table
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'John Doe',
+  @Gender = 1,
+  @PhoneNumber = '123456789',
+  @Address = '123 Main St',
+  @DateOfBirth = '1980-01-01',
+  @Email = 'johndoe@example.com',
+  @HealthInsuranceId = 'HI12345',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+-- SELECT @NewPatientId AS NewPatientId;
+
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Jane Smith',
+  @Gender = 0,
+  @PhoneNumber = '987654321',
+  @Address = '456 Elm St',
+  @DateOfBirth = '1990-05-15',
+  @Email = 'janesmith@example.com',
+  @HealthInsuranceId = 'HI67890',
+  @NewPatientId = @NewPatientId OUTPUT;
+SELECT @NewPatientId AS NewPatientId;
+
+-- Insert mock data into PatientVisit table
+DECLARE @NewVisitId INT;
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 8,
+  @VisitDate = '2023-01-01',
+  @Notes = 'Routine check-up',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 8,
+  @VisitDate = '2023-02-15',
+  @Notes = 'Follow-up visit',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Insert mock data into MedicalHistory table
+DECLARE @NewMedicalHistoryId INT;
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 3,
+  @DoctorId = 1,
+  @Department = 'Cardiology',
+  @ReasonForVisit = 'Chest pain',
+  @Diagnosis = 'Mild arrhythmia',
+  @Treatment = 'Medication prescribed',
+  @PrescribedMedication = 'Beta blockers',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 4,
+  @DoctorId = 1,
+  @Department = 'Dermatology',
+  @ReasonForVisit = 'Skin rash',
+  @Diagnosis = 'Allergic reaction',
+  @Treatment = 'Topical cream',
+  @PrescribedMedication = 'Hydrocortisone cream',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Mock execution to update patient
+EXEC SoftwareArchitecture.EditPatient
+  @PatientId = 8,
+  @Name = 'Johnathan Doe',
+  @Gender = 1,
+  @PhoneNumber = '1234567890',
+  @Address = '123 Updated Main St',
+  @DateOfBirth = '1980-01-01',
+  @Email = 'johnathan.doe@example.com',
+  @HealthInsuranceId = 'HI12345-UPDATED';
+
+-- Mock execution to update medical history
+EXEC SoftwareArchitecture.EditMedicalHistory
+  @MedicalHistoryId = 1,
+  @PatientVisitId = 3,
+  @DoctorId = 2,
+  @Department = 'Updated Cardiology',
+  @ReasonForVisit = 'Updated chest pain reason',
+  @Diagnosis = 'Updated mild arrhythmia diagnosis',
+  @Treatment = 'Updated medication prescribed',
+  @PrescribedMedication = 'Updated beta blockers';
+
+-- Mock execution to delete patient
+EXEC SoftwareArchitecture.DeletePatient
+  @PatientId = 8;
+
+-- Mock execution to delete patient visit
+EXEC SoftwareArchitecture.DeletePatientVisit
+  @VisitId = 3;
+
+-- Mock execution to delete medical history
+EXEC SoftwareArchitecture.DeleteMedicalHistory
+  @MedicalHistoryId = 1;
+
+EXEC SoftwareArchitecture.GetAllPatients
+EXEC SoftwareArchitecture.GetAllPatientVisits
+EXEC SoftwareArchitecture.GetAllMedicalHistory
