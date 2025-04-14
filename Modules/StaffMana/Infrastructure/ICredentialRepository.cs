@@ -7,7 +7,7 @@ namespace BTL_SA.Modules.StaffMana.Infrastructure
         int Create(CredentialBase credential, Employee employee);
         CredentialBase? FindById(int id);
         int Update(CredentialBase credential);
-        int Delete(CredentialBase credential);
+        int Delete(int id);
         int AssignEmployeeToCredential(int credentialId, int employeeId);
     }
 }

@@ -473,7 +473,7 @@ BEGIN
 END;
 GO
 
-EXEC SoftwareArchitecture.GetCredentialById @Id = 2;
+EXEC SoftwareArchitecture.GetCredentialById @Id = 1;
 
 -- Create a procedure to assign an employee to a CredentialBase
 CREATE PROCEDURE SoftwareArchitecture.AssignEmployeeToCredential

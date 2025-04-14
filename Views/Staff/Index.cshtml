@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "Employee Management";
+}
+
+<h1>Employee Management</h1>
+
+<div id="employee-list">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="employee-table-body">
+            <!-- Employee rows will be dynamically populated here -->
+            <tr>
+                <td>${employee.id}</td>
+                <td>${employee.name}</td>
+                <td>${employee.role}</td>
+                <td>${employee.department}</td>
+                <td>
+                    <button class="btn btn-warning" onclick="editEmployee(${employee.id})">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteEmployee(${employee.id})">Delete</button>
+                    <button class="btn btn-info" onclick="fetchCredentials(${employee.id}); document.getElementById('selected-employee-name').innerText = '${employee.name}'; document.getElementById('employee-credentials').style.display = 'block';">View Credentials</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<button class="btn btn-primary" onclick="showCreateEmployeeForm()">Add Employee</button>
+
+<div id="employee-form" style="display: none;">
+    <h2 id="form-title">Create Employee</h2>
+    <form id="employee-form-element">
+        <input type="hidden" id="employee-id" />
+        <div class="form-group">
+            <label for="employee-name">Name</label>
+            <input type="text" id="employee-name" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="employee-role">Role</label>
+            <input type="text" id="employee-role" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="employee-department">Department</label>
+            <input type="text" id="employee-department" class="form-control" required />
+        </div>
+        <button type="button" class="btn btn-success" onclick="submitEmployeeForm()">Save</button>
+        <button type="button" class="btn btn-secondary" onclick="hideEmployeeForm()">Cancel</button>
+    </form>
+</div>
+
+<!-- Nested Credential Management Section -->
+<div id="employee-credentials" style="display: none;">
+    <h2>Manage Credentials for <span id="selected-employee-name"></span></h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Issue Date</th>
+                <th>Expiry Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="credentials-table-body">
+            <!-- Credential rows will be dynamically populated here -->
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" onclick="showAddCredentialForm()">Add Credential</button>
+
+    <div id="credential-form" style="display: none;">
+        <h2 id="credential-form-title">Add Credential</h2>
+        <form id="credential-form-element">
+            <input type="hidden" id="credential-id" />
+            <div class="form-group">
+                <label for="credential-type">Type</label>
+                <select id="credential-type" class="form-control" required onchange="updateCredentialFormFields(this.value)">
+                    <option value="License">License</option>
+                    <option value="Certificate">Certificate</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="credential-name">Name</label>
+                <input type="text" id="credential-name" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="credential-issuing-body">Issuing Body</label>
+                <input type="text" id="credential-issuing-body" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="credential-issue-date">Issue Date</label>
+                <input type="date" id="credential-issue-date" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="credential-expiry-date">Expiry Date</label>
+                <input type="date" id="credential-expiry-date" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label id="credential-additional-field1-label" for="credential-additional-field1">Number</label>
+                <input type="text" id="credential-additional-field1" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label id="credential-additional-field2-label" for="credential-additional-field2">Restriction</label>
+                <input type="text" id="credential-additional-field2" class="form-control" />
+            </div>
+            <button type="button" class="btn btn-success" onclick="submitCredentialForm()">Save</button>
+            <button type="button" class="btn btn-secondary" onclick="hideCredentialForm()">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<script src="/js/employee-management.js"></script>
+<script src="/js/credential-management.js"></script>

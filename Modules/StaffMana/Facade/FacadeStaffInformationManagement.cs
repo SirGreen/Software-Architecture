@@ -7,12 +7,14 @@ public class FacadeStaffInformationManagement(
     IEmployeeService employeeService,
     ICredentialService credentialService,
     IQuerySevice querySevice,
-    IAssignmentService assignmentService)
+    IAssignmentService assignmentService,
+    ICredentialDelete credentialDelete)
 {
     private readonly IAssignmentService _assignmentService = assignmentService;
     private readonly IEmployeeService _employeeService = employeeService;
     private readonly ICredentialService _credentialService = credentialService;
     private readonly IQuerySevice _querySevice = querySevice;
+    private readonly ICredentialDelete _credentialDelete = credentialDelete;
 
     public int Create(EmployeeForm employee)
     {
@@ -47,6 +49,11 @@ public class FacadeStaffInformationManagement(
     public int RenewCredential(int credentialId, DateTime newExprDate)
     {
         return _credentialService.RenewCredential(credentialId, newExprDate);
+    }
+
+    public int DeleteCredential(int credential)
+    {
+        return _credentialDelete.DeleteCredential(credential);
     }
 
     public int AssignRole(Employee employee, string role)
