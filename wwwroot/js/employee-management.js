@@ -131,7 +131,7 @@ function renderEmployees(employees) {
                 <td class="role">
                     <span class="badge bg-soft-${getRoleBadgeColor(employee.role)} text-${getRoleBadgeColor(employee.role)}">${employee.role || 'Unassigned'}</span>
                 </td>
-                <td class="department">
+                <td class="departmentCustom">
                     <span class="department-badge bg-soft-info text-info">${employee.department || 'Unassigned'}</span>
                 </td>
                 <td>
@@ -334,7 +334,7 @@ function addCustomStyling() {
 // Function to initialize List.js for pagination
 function initializeListJs() {
     var options = {
-        valueNames: ['id', 'name', 'role', 'department'],
+        valueNames: ['id', 'name', 'role', 'departmentCustom'],
         page: 10,
         pagination: true
     };
@@ -360,7 +360,7 @@ function filterEmployees(searchTerm) {
     rows.forEach(row => {
         const name = row.querySelector('.name')?.textContent.toLowerCase() || '';
         const role = row.querySelector('.role')?.textContent.toLowerCase() || '';
-        const department = row.querySelector('.department')?.textContent.toLowerCase() || '';
+        const department = row.querySelector('.departmentCustom')?.textContent.toLowerCase() || '';
         const id = row.querySelector('.id')?.textContent.toLowerCase() || '';
         
         if (name.includes(searchTerm) || role.includes(searchTerm) || 
@@ -387,7 +387,7 @@ function filterByDepartment(department) {
     let foundMatch = false;
     
     rows.forEach(row => {
-        const deptCell = row.querySelector('.department')?.textContent.trim() || '';
+        const deptCell = row.querySelector('.departmentCustom')?.textContent.trim() || '';
         
         if (!department || deptCell.includes(department)) {
             row.style.display = '';
