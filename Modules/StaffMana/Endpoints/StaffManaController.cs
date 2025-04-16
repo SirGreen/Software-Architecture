@@ -116,17 +116,17 @@ namespace BTL_SA.Modules.StaffMana.Endpoints
             }
         }
 
-        [HttpPut("credentials/{credId:int}")]
+        [HttpPut("credentials")]
         [SwaggerOperation(Summary = "Renew a credential")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult RenewCredential([FromRoute] int credId, [FromBody] RenewCredForm credential)
+        public IActionResult RenewCredential([FromBody] RenewCredForm credential)
         {
             try
             {
-                if (credId != credential.CredId)
+                if (credential.CredId == 0)
                 {
-                    return BadRequest(new { message = "Credential ID in route must match ID in body." });
+                    return BadRequest(new { message = "Credential ID must be provided." });
                 }
                 
                 var result = _staffInfoMana.RenewCredential(credential.CredId, credential.NewExprDate);
@@ -144,6 +144,18 @@ namespace BTL_SA.Modules.StaffMana.Endpoints
                 Console.WriteLine("Error renewing credential: " + ex.Message);
                 return StatusCode(500, new { message = "Internal server error." });
             }
+        }
+
+        [HttpDelete("credentials/{credId:int}")]
+        [SwaggerOperation(Summary = "Delete a credential")]
+        public IActionResult DeleteCredential([FromRoute] int credId)
+        {
+            var result = _staffInfoMana.DeleteCredential(credId);
+            if (result == 1)
+            {
+                return NoContent();
+            }
+            return BadRequest(new { message = "Failed to delete credential." });
         }
 
         [HttpPut("{employeeId:int}/role")]

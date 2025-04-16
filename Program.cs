@@ -23,6 +23,7 @@ builder.Services.AddSingleton<IQuerySevice, QueryService>();
 builder.Services.AddSingleton<IEmployeeService, EmployeeService>();
 builder.Services.AddSingleton<IAssignmentService, AssignmentService>();
 builder.Services.AddSingleton<ICredentialService, CredentialService>();
+builder.Services.AddSingleton<ICredentialDelete, CredentialDelete>();
 
 builder.Services.AddSingleton<FacadeStaffInformationManagement>();
 

@@ -1,0 +1,381 @@
+@{
+    ViewData["Title"] = "Staff Management";
+}
+
+<link href="~/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/aos/aos.css" rel="stylesheet" type="text/css" />
+
+<!-- Breadcrumb -->
+<div class="page-title-box d-sm-flex align-items-center justify-content-between">
+    <h4 class="mb-sm-0">Staff Management</h4>
+    <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+            <li class="breadcrumb-item active">Staff Management</li>
+        </ol>
+    </div>
+</div>
+
+<!-- Main content -->
+<div class="row" data-aos="fade-up">
+    <div class="col-xl-12">
+        <div class="card" id="employeeList">
+            <div class="card-header border-0 rounded">
+                <div class="row g-2">
+                    <div class="col-xl-3">
+                        <div class="search-box">
+                            <input type="text" class="form-control search" placeholder="Search for employee...">
+                            <i class="ri-search-line search-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        <div>
+                            <select class="form-control" id="filterDepartment" data-choices data-choices-search-false>
+                                <option value="">All Departments</option>
+                                <option value="Emergency">Emergency</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="Radiology">Radiology</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Administration">Administration</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-auto ms-auto">
+                        <div class="hstack gap-2">
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeMultipleEmployeeModal" id="remove-multiple-btn">
+                                <i class="ri-delete-bin-2-line"></i> Delete
+                            </button>
+                            <button class="btn btn-soft-info" onclick="location.reload()">
+                                <i class="ri-refresh-line"></i>
+                            </button>
+                            <button class="btn btn-primary" onclick="showCreateEmployeeForm()">
+                                <i class="ri-add-line align-bottom me-1"></i> Add Employee
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+                <div>
+                    <div class="table-responsive table-card mb-3">
+                        <table class="table align-middle table-nowrap mb-0" id="employeeTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" style="width: 46px;">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="checkAll">
+                                        </div>
+                                    </th>
+                                    <th class="sort" data-sort="id" style="width: 80px;">ID</th>
+                                    <th class="sort" data-sort="name">Name</th>
+                                    <th class="sort" data-sort="role">Role</th>
+                                    <th class="sort" data-sort="department">Department</th>
+                                    <th style="width: 150px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list" id="employee-table-body">
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <div class="d-flex align-items-center justify-content-center py-4">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <span class="ms-2">Loading employees...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="noresult" style="display: none">
+                            <div class="text-center py-4">
+                                <div class="avatar-md mx-auto mb-4">
+                                    <div class="avatar-title bg-light text-primary rounded-circle fs-24">
+                                        <i class="ri-user-search-line"></i>
+                                    </div>
+                                </div>
+                                <h5 class="mt-2">No Employees Found</h5>
+                                <p class="text-muted mb-0">We couldn't find any employees matching your search criteria.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <div class="pagination-wrap hstack gap-2">
+                            <ul class="pagination listjs-pagination mb-0"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Employee Form Modal -->
+<div class="modal fade" id="employee-form-modal" tabindex="-1" aria-labelledby="employee-form-modal-label" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0">
+            <div class="modal-header p-4 pb-0">
+                <h5 class="modal-title" id="form-title">Create Employee</h5>
+                <button type="button" class="btn-close" aria-label="Close" onclick="hideEmployeeForm()"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form class="needs-validation" novalidate id="employee-form-element">
+                    <input type="hidden" id="employee-id">
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <div class="position-relative mb-3">
+                                <label for="employee-name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="employee-name" placeholder="Enter full name" required>
+                                <div class="invalid-feedback">
+                                    Please enter a name.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="position-relative mb-3">
+                                <label for="employee-email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="employee-email" placeholder="Enter email address" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="position-relative mb-3">
+                                <label for="employee-dob" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="employee-dob" required>
+                                <div class="invalid-feedback">
+                                    Please provide date of birth.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="position-relative mb-3">
+                                <label for="employee-phone" class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" id="employee-phone" placeholder="Enter phone number" required>
+                                <div class="invalid-feedback">
+                                    Please enter a phone number.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="position-relative mb-3">
+                                <label for="employee-gender" class="form-label">Gender</label>
+                                <select class="form-select" id="employee-gender" required>
+                                    <option value="true">Male</option>
+                                    <option value="false">Female</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select gender.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="position-relative mb-3">
+                                <label for="employee-department" class="form-label">Department</label>
+                                <select class="form-select" id="employee-department" required>
+                                    <option value="">Select Department</option>
+                                    <option value="Emergency">Emergency</option>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="Radiology">Radiology</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="Administration">Administration</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select a department.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="position-relative mb-3">
+                                <label for="employee-role" class="form-label">Role</label>
+                                <select class="form-select" id="employee-role" required>
+                                    <option value="">Select Role</option>
+                                    <option value="Doctor">Doctor</option>
+                                    <option value="Nurse">Nurse</option>
+                                    <option value="Technician">Technician</option>
+                                    <option value="Administrator">Administrator</option>
+                                    <option value="Receptionist">Receptionist</option>
+                                    <option value="Specialist">Specialist</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select a role.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="position-relative mb-3">
+                                <label for="employee-address" class="form-label">Address</label>
+                                <textarea class="form-control" id="employee-address" rows="3" placeholder="Enter address" required></textarea>
+                                <div class="invalid-feedback">
+                                    Please enter an address.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="hstack gap-2 justify-content-end">
+                    <button type="button" class="btn btn-light" onclick="hideEmployeeForm()">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="add-btn" onclick="submitEmployeeForm()"><i class="ri-save-line align-bottom me-1"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Credential Management Modal -->
+<div class="modal fade" id="credential-management-modal" tabindex="-1" aria-labelledby="credential-management-modal-label" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0">
+            <div class="modal-header bg-soft-primary p-4">
+                <div>
+                    <h5 class="modal-title text-primary" id="credential-management-modal-label">Credential Management</h5>
+                    <p class="text-muted mb-0">Manage credentials for <span id="selected-employee-name" class="fw-semibold"></span></p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title mb-0">Credentials List</h5>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="showAddCredentialForm()">
+                        <i class="ri-add-line align-bottom me-1"></i> Add Credential
+                    </button>
+                </div>
+
+                <!-- License Table -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="ri-award-line align-middle me-1 text-primary"></i> 
+                            Licenses
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" id="employee-licenses">
+                            <table class="table align-middle table-nowrap mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 60px;">ID</th>
+                                        <th>Number</th>
+                                        <th>Issuing Body</th>
+                                        <th style="width: 120px;">Issue Date</th>
+                                        <th style="width: 120px;">Expiry Date</th>
+                                        <th style="width: 120px;">Restriction</th>
+                                        <th style="width: 100px;">Status</th>
+                                        <th style="width: 100px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="licenses-table-body">
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <div class="py-3">
+                                                <span class="text-muted">Loading licenses...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate Table -->
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="ri-file-list-3-line align-middle me-1 text-info"></i> 
+                            Certificates
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" id="employee-certificates">
+                            <table class="table align-middle table-nowrap mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 60px;">ID</th>
+                                        <th>Name</th>
+                                        <th>Issuing Body</th>
+                                        <th style="width: 120px;">Issue Date</th>
+                                        <th style="width: 120px;">Expiry Date</th>
+                                        <th style="width: 100px;">Level</th>
+                                        <th style="width: 100px;">Version</th>
+                                        <th style="width: 100px;">Status</th>
+                                        <th style="width: 100px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="certificates-table-body">
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            <div class="py-3">
+                                                <span class="text-muted">Loading certificates...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="backToEmployeeDetails()">
+                    <i class="ri-arrow-left-line align-bottom me-1"></i> Back to Employee Details
+                </button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Multiple Deletion Confirmation Modal -->
+<div class="modal fade zoomIn" id="removeMultipleEmployeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mt-2 text-center">
+                    <lord-icon
+                        src="https://cdn.lordicon.com/gsqxdxog.json"
+                        trigger="loop"
+                        colors="primary:#f7b84b,secondary:#f06548"
+                        style="width:100px;height:100px">
+                    </lord-icon>
+                    <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                        <h4>Are you sure?</h4>
+                        <p class="text-muted mx-4 mb-0">Are you sure you want to delete the selected employees?</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                    <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn w-sm btn-danger" id="remove-multiple-confirm-btn">Yes, Delete!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/libs/list.js/list.min.js"></script>
+    <script src="~/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/assets/libs/flatpickr.min.js"></script>
+    <script src="~/assets/libs/choices.min.js"></script>
+    <script src="~/assets/libs/aos/aos.js"></script>
+    <script src="~/js/employee-management.js"></script>
+    <script>
+        // Fix for pagination links jumping to top of page
+        document.addEventListener('click', function(e) {
+            // Check if the clicked element is a pagination link
+            if (e.target.closest('.listjs-pagination a')) {
+                e.preventDefault(); // Prevent default link behavior
+            }
+        }, true);
+    </script>
+}

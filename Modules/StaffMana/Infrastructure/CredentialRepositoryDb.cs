@@ -74,36 +74,61 @@ public class CredentialRepositoryDb(DatabaseService dbService) : ICredentialRepo
         };
         if (_dbService.DataBaseInquiry("SoftwareArchitecture.GetCredentialById", parameters) is not SqlDataReader result)
             return null;
-        using var reader = result; 
-        if (reader.Read())
+        using var reader = result;
+        try
         {
-            if (reader["Restriction"] != null) {
-                var license = new License(
-                    id,
-                    reader["Name"]?.ToString(),
-                    reader["IssuingBody"]?.ToString(),
-                    DateTime.TryParse(reader["IssueDate"]?.ToString(), out var issueDate) ? issueDate : default,
-                    DateTime.TryParse(reader["ExpirationDate"]?.ToString(), out var expirateDate) ? expirateDate : default,
-                    reader["Number"]?.ToString(),
-                    reader["Restriction"]?.ToString()
-                );
-                return license;
-            } else {
-                var certificate = new Certificate(
-                    id,
-                    reader["Name"]?.ToString(),
-                    reader["IssuingBody"]?.ToString(),
-                    DateTime.TryParse(reader["IssueDate"]?.ToString(), out var issueDate) ? issueDate : default,
-                    DateTime.TryParse(reader["ExpirationDate"]?.ToString(), out var expirateDate) ? expirateDate : default,
-                    reader["Level"]?.ToString(),
-                    reader["Version"]?.ToString()
-                );
-                return certificate;
+            if (reader.Read())
+            {
+                // Check if columns exist before attempting to access them
+                bool hasRestrictionColumn = false;
+                bool hasLevelColumn = false;
+                    
+                try { hasRestrictionColumn = reader.GetOrdinal("Restriction") >= 0; } 
+                catch (IndexOutOfRangeException) { /* Column doesn't exist */ }
+                    
+                try { hasLevelColumn = reader.GetOrdinal("Level") >= 0; } 
+                catch (IndexOutOfRangeException) { /* Column doesn't exist */ }
+                if (hasRestrictionColumn)
+                {
+                    var license = new License(
+                        id,
+                        reader["Name"]?.ToString(),
+                        reader["IssuingBody"]?.ToString(),
+                        DateTime.TryParse(reader["IssueDate"]?.ToString(), out var issueDate) ? issueDate : default,
+                        DateTime.TryParse(reader["ExpirationDate"]?.ToString(), out var expirateDate) ? expirateDate : default,
+                        reader["Number"]?.ToString(),
+                        reader["Restriction"]?.ToString()
+                    );
+                    return license;
+                }
+                else
+                {
+                    var certificate = new Certificate(
+                        id,
+                        reader["Name"]?.ToString(),
+                        reader["IssuingBody"]?.ToString(),
+                        DateTime.TryParse(reader["IssueDate"]?.ToString(), out var issueDate) ? issueDate : default,
+                        DateTime.TryParse(reader["ExpirationDate"]?.ToString(), out var expirateDate) ? expirateDate : default,
+                        reader["Level"]?.ToString(),
+                        reader["Version"]?.ToString()
+                    );
+                    Console.WriteLine("Created certificate ID: " + id);
+                    return certificate;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error reading credential: " + ex.Message);
+        }
+        finally
+        {
+            reader.Close();
         }
         return null;
     }
-    public int Update(CredentialBase credential) {
+    public int Update(CredentialBase credential)
+    {
         try
         {
             var parameters = new Dictionary<string, object>
@@ -116,13 +141,13 @@ public class CredentialRepositoryDb(DatabaseService dbService) : ICredentialRepo
             };
             if (credential is License license)
             {
-                parameters.Add("@CredentialType","License");
+                parameters.Add("@CredentialType", "License");
                 parameters.Add("@Number", license.Number ?? string.Empty);
                 parameters.Add("@Restriction", license.Restriction ?? string.Empty);
             }
             else if (credential is Certificate certificate)
             {
-                parameters.Add("@CredentialType","Certificate");
+                parameters.Add("@CredentialType", "Certificate");
                 parameters.Add("@Level", certificate.Level ?? string.Empty);
                 parameters.Add("@Version", certificate.Version ?? string.Empty);
             }
@@ -136,12 +161,13 @@ public class CredentialRepositoryDb(DatabaseService dbService) : ICredentialRepo
         }
     }
 
-    public int Delete(CredentialBase credential) {
+    public int Delete(int id)
+    {
         try
         {
             var parameters = new Dictionary<string, object>
             {
-                { "@Id", credential.Id }
+                { "@Id", id }
             };
             _dbService.DataBaseInquiry("SoftwareArchitecture.DeleteCredential", parameters);
             return 1;
@@ -153,7 +179,8 @@ public class CredentialRepositoryDb(DatabaseService dbService) : ICredentialRepo
         }
     }
 
-    public int AssignEmployeeToCredential(int credentialId, int employeeId) {
+    public int AssignEmployeeToCredential(int credentialId, int employeeId)
+    {
         try
         {
             var parameters = new Dictionary<string, object>

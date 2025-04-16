@@ -1,8 +1,347 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Healthcare Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">HEllo!</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Page Title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Healthcare Management Dashboard</h4>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Dashboard Header -->
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card crm-widget">
+            <div class="card-body p-0">
+                <div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 g-0">
+                    <div class="col">
+                        <div class="py-4 px-3">
+                            <h5 class="text-muted text-uppercase fs-13">Patients</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h2 class="mb-0"><span class="counter-value" data-target="547">0</span></h2>
+                                </div>
+                                <div class="flex-shrink-0 text-end dash-widget">
+                                    <div id="patient_chart" data-colors='["--vz-primary"]' class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mt-3 mt-md-0 py-4 px-3">
+                            <h5 class="text-muted text-uppercase fs-13">Staff Members</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h2 class="mb-0"><span class="counter-value" data-target="124">0</span></h2>
+                                </div>
+                                <div class="flex-shrink-0 text-end dash-widget">
+                                    <div id="staff_chart" data-colors='["--vz-primary"]' class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mt-3 mt-md-0 py-4 px-3">
+                            <h5 class="text-muted text-uppercase fs-13">Appointments</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h2 class="mb-0"><span class="counter-value" data-target="89">0</span> Today</h2>
+                                </div>
+                                <div class="flex-shrink-0 text-end dash-widget">
+                                    <div id="appointment_chart" data-colors='["--vz-success"]' class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mt-3 mt-xxl-0 py-4 px-3">
+                            <h5 class="text-muted text-uppercase fs-13">Medical Data</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h2 class="mb-0"><span class="counter-value" data-target="937">0</span></h2>
+                                </div>
+                                <div class="flex-shrink-0 text-end dash-widget">
+                                    <div id="medical_chart" data-colors='["--vz-info"]' class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mt-3 mt-xxl-0 py-4 px-3">
+                            <h5 class="text-muted text-uppercase fs-13">Active Devices</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h2 class="mb-0"><span class="counter-value" data-target="32">0</span></h2>
+                                </div>
+                                <div class="flex-shrink-0 text-end dash-widget">
+                                    <div id="device_chart" data-colors='["--vz-warning"]' class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Access Buttons -->
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Quick Access</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="card bg-primary-subtle bg-soft mb-0">
+                            <div class="card-body">
+                                <a href="/Patient" class="stretched-link">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="ri-user-heart-line display-6 text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h5 class="mb-0 text-body">Patient Management</h5>
+                                            <p class="text-secondary mb-0">View and manage patients</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success-subtle bg-soft mb-0">
+                            <div class="card-body">
+                                <a href="/Staff" class="stretched-link">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="ri-user-2-line display-6 text-success"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h5 class="mb-0 text-success">Staff Management</h5>
+                                            <p class="text-muted mb-0">Manage staff and credentials</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-info-subtle bg-soft mb-0">
+                            <div class="card-body">
+                                <a href="/Patient/Visits" class="stretched-link">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="ri-calendar-check-line display-6 text-info"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h5 class="mb-0 text-info">Patient Visits</h5>
+                                            <p class="text-muted mb-0">Schedule and track visits</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-xl-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Recent Patient Activity</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive table-card">
+                    <table class="table table-borderless table-hover table-nowrap align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Patient</th>
+                                <th scope="col">Visit Type</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#P001</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-light rounded p-1 me-2">
+                                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-14 my-1">Robert Johnson</h5>
+                                            <span class="text-muted">ID: 12345</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>General Checkup</td>
+                                <td>Apr 15, 2025</td>
+                                <td><span class="badge badge-soft-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#P002</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-light rounded p-1 me-2">
+                                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-14 my-1">Emily Parker</h5>
+                                            <span class="text-muted">ID: 12346</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Specialist Consultation</td>
+                                <td>Apr 16, 2025</td>
+                                <td><span class="badge badge-soft-warning">Scheduled</span></td>
+                            </tr>
+                            <tr>
+                                <td>#P003</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-light rounded p-1 me-2">
+                                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-14 my-1">Michael Davis</h5>
+                                            <span class="text-muted">ID: 12347</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Laboratory Test</td>
+                                <td>Apr 14, 2025</td>
+                                <td><span class="badge badge-soft-primary">In Progress</span></td>
+                            </tr>
+                            <tr>
+                                <td>#P004</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-light rounded p-1 me-2">
+                                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-14 my-1">Sarah Thompson</h5>
+                                            <span class="text-muted">ID: 12348</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Follow-up</td>
+                                <td>Apr 13, 2025</td>
+                                <td><span class="badge badge-soft-success">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="/Patient/Visits" class="btn btn-primary btn-sm">View All Visits <i class="ri-arrow-right-line align-bottom"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Today's Schedule</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center p-3 border-bottom border-bottom-dashed">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="avatar-sm bg-light rounded p-1">
+                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fs-14 mb-1">Emily Parker</h5>
+                        <p class="text-muted mb-0">09:00 AM - General Checkup</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="badge badge-soft-primary">Upcoming</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center p-3 border-bottom border-bottom-dashed">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="avatar-sm bg-light rounded p-1">
+                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fs-14 mb-1">James Wilson</h5>
+                        <p class="text-muted mb-0">11:30 AM - Dental Checkup</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="badge badge-soft-warning">Next</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center p-3 border-bottom border-bottom-dashed">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="avatar-sm bg-light rounded p-1">
+                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fs-14 mb-1">Lisa Anderson</h5>
+                        <p class="text-muted mb-0">02:00 PM - Physical Therapy</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="badge badge-soft-warning">Next</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center p-3">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="avatar-sm bg-light rounded p-1">
+                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="img-fluid d-block">
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fs-14 mb-1">David Martinez</h5>
+                        <p class="text-muted mb-0">04:30 PM - Consultation</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="badge badge-soft-warning">Next</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Counter animation
+            const counterElements = document.querySelectorAll(".counter-value");
+            counterElements.forEach(function(element) {
+                const target = parseInt(element.getAttribute("data-target"));
+                let count = 0;
+                const speed = Math.floor(1000 / target);
+                
+                const counterInterval = setInterval(function() {
+                    count++;
+                    element.textContent = count;
+                    if (count >= target) {
+                        clearInterval(counterInterval);
+                    }
+                }, speed);
+            });
+        });
+    </script>
+}

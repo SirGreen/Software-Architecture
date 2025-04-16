@@ -473,7 +473,7 @@ BEGIN
 END;
 GO
 
-EXEC SoftwareArchitecture.GetCredentialById @Id = 2;
+EXEC SoftwareArchitecture.GetCredentialById @Id = 1;
 
 -- Create a procedure to assign an employee to a CredentialBase
 CREATE PROCEDURE SoftwareArchitecture.AssignEmployeeToCredential
@@ -640,3 +640,131 @@ EXEC SoftwareArchitecture.AddEmployee
     @NewEmployeeId = @NewEmployeeId OUTPUT;
 
 SELECT @NewEmployeeId AS NewEmployeeId;
+
+-- Add 10 more employees with healthcare roles
+-- 1. Doctor - Emergency
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = ' Robert Williams',
+    @Gender = 1,
+    @PhoneNumber = '555-101-2020',
+    @Address = '420 Hospital Drive, Cityville',
+    @DateOfBirth = '1975-06-15',
+    @Email = 'robert.williams@hospital.com',
+    @Department = 'Emergency',
+    @Role = 'Doctor',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 2. Doctor - Neurology
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = ' Sarah Johnson',
+    @Gender = 0,
+    @PhoneNumber = '555-202-3030',
+    @Address = '555 Neurology Lane, Cityville',
+    @DateOfBirth = '1980-03-22',
+    @Email = 'sarah.johnson@hospital.com',
+    @Department = 'Neurology',
+    @Role = 'Doctor',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 3. Doctor - Pediatric
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = ' Michael Chen',
+    @Gender = 1,
+    @PhoneNumber = '555-303-4040',
+    @Address = '123 Children Way, Cityville',
+    @DateOfBirth = '1978-11-10',
+    @Email = 'michael.chen@hospital.com',
+    @Department = 'Pediatric',
+    @Role = 'Doctor',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 4. Doctor - Radiology
+DECLARE @NewEmployeeId INT;
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = ' Emily Rodriguez',
+    @Gender = 0,
+    @PhoneNumber = '555-404-5050',
+    @Address = '789 Imaging Road, Cityville',
+    @DateOfBirth = '1982-07-18',
+    @Email = 'emily.rodriguez@hospital.com',
+    @Department = 'Radiology',
+    @Role = 'Doctor',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 5. Nurse - Emergency
+
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = 'James Wilson',
+    @Gender = 1,
+    @PhoneNumber = '555-505-6060',
+    @Address = '432 Nurse Avenue, Cityville',
+    @DateOfBirth = '1988-05-29',
+    @Email = 'james.wilson@hospital.com',
+    @Department = 'Emergency',
+    @Role = 'Nurse',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 6. Nurse - Pediatric
+
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = 'Jessica Martinez',
+    @Gender = 0,
+    @PhoneNumber = '555-606-7070',
+    @Address = '321 Care Street, Cityville',
+    @DateOfBirth = '1990-12-05',
+    @Email = 'jessica.martinez@hospital.com',
+    @Department = 'Pediatric',
+    @Role = 'Nurse',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 7. Administrator - Neurology
+
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = 'Thomas Brown',
+    @Gender = 1,
+    @PhoneNumber = '555-707-8080',
+    @Address = '654 Admin Blvd, Cityville',
+    @DateOfBirth = '1979-08-14',
+    @Email = 'thomas.brown@hospital.com',
+    @Department = 'Neurology',
+    @Role = 'Administrator',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 8. Administrator - Radiology
+DECLARE @NewEmployeeId INT;
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = 'Lisa Thompson',
+    @Gender = 0,
+    @PhoneNumber = '555-808-9090',
+    @Address = '987 Management Circle, Cityville',
+    @DateOfBirth = '1985-02-27',
+    @Email = 'lisa.thompson@hospital.com',
+    @Department = 'Radiology',
+    @Role = 'Administrator',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 9. Receptionist - Emergency
+
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = 'Kevin Davis',
+    @Gender = 1,
+    @PhoneNumber = '555-909-1010',
+    @Address = '246 Reception Road, Cityville',
+    @DateOfBirth = '1992-06-11',
+    @Email = 'kevin.davis@hospital.com',
+    @Department = 'Emergency',
+    @Role = 'Receptionist',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;
+
+-- 10. Receptionist - Pediatric
+
+EXEC SoftwareArchitecture.AddEmployee
+    @Name = 'Amanda Garcia',
+    @Gender = 0,
+    @PhoneNumber = '555-010-1111',
+    @Address = '753 Front Desk Drive, Cityville',
+    @DateOfBirth = '1994-09-03',
+    @Email = 'amanda.garcia@hospital.com',
+    @Department = 'Pediatric',
+    @Role = 'Receptionist',
+    @NewEmployeeId = @NewEmployeeId OUTPUT;

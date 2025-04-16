@@ -563,6 +563,7 @@ EXEC SoftwareArchitecture.AddPatient
 
 -- SELECT @NewPatientId AS NewPatientId;
 
+DECLARE @NewPatientId INT;
 EXEC SoftwareArchitecture.AddPatient 
   @Name = 'Jane Smith',
   @Gender = 0,
@@ -574,18 +575,263 @@ EXEC SoftwareArchitecture.AddPatient
   @NewPatientId = @NewPatientId OUTPUT;
 SELECT @NewPatientId AS NewPatientId;
 
+-- Add 10 more patients
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Robert Johnson',
+  @Gender = 1,
+  @PhoneNumber = '555-123-4567',
+  @Address = '789 Oak Avenue',
+  @DateOfBirth = '1975-08-22',
+  @Email = 'robert.johnson@example.com',
+  @HealthInsuranceId = 'HI24680',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Emily Parker',
+  @Gender = 0,
+  @PhoneNumber = '555-987-6543',
+  @Address = '321 Pine Road',
+  @DateOfBirth = '1988-11-30',
+  @Email = 'emily.parker@example.com',
+  @HealthInsuranceId = 'HI13579',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Michael Davis',
+  @Gender = 1,
+  @PhoneNumber = '555-246-8135',
+  @Address = '567 Maple Street',
+  @DateOfBirth = '1965-04-12',
+  @Email = 'michael.davis@example.com',
+  @HealthInsuranceId = 'HI97531',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Sarah Thompson',
+  @Gender = 0,
+  @PhoneNumber = '555-369-8521',
+  @Address = '890 Cedar Lane',
+  @DateOfBirth = '1992-02-28',
+  @Email = 'sarah.thompson@example.com',
+  @HealthInsuranceId = 'HI86420',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'David Wilson',
+  @Gender = 1,
+  @PhoneNumber = '555-159-7532',
+  @Address = '432 Birch Boulevard',
+  @DateOfBirth = '1983-07-19',
+  @Email = 'david.wilson@example.com',
+  @HealthInsuranceId = 'HI24689',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Jennifer Adams',
+  @Gender = 0,
+  @PhoneNumber = '555-753-9514',
+  @Address = '678 Willow Court',
+  @DateOfBirth = '1979-10-05',
+  @Email = 'jennifer.adams@example.com',
+  @HealthInsuranceId = 'HI13572',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'James Anderson',
+  @Gender = 1,
+  @PhoneNumber = '555-852-7413',
+  @Address = '901 Spruce Drive',
+  @DateOfBirth = '1970-12-15',
+  @Email = 'james.anderson@example.com',
+  @HealthInsuranceId = 'HI97532',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Lisa Martinez',
+  @Gender = 0,
+  @PhoneNumber = '555-741-9632',
+  @Address = '543 Ash Place',
+  @DateOfBirth = '1995-06-08',
+  @Email = 'lisa.martinez@example.com',
+  @HealthInsuranceId = 'HI86421',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Thomas Brown',
+  @Gender = 1,
+  @PhoneNumber = '555-963-8520',
+  @Address = '876 Redwood Road',
+  @DateOfBirth = '1968-03-24',
+  @Email = 'thomas.brown@example.com',
+  @HealthInsuranceId = 'HI24688',
+  @NewPatientId = @NewPatientId OUTPUT;
+
+DECLARE @NewPatientId INT;
+EXEC SoftwareArchitecture.AddPatient 
+  @Name = 'Amanda Walker',
+  @Gender = 0,
+  @PhoneNumber = '555-258-7496',
+  @Address = '234 Sequoia Avenue',
+  @DateOfBirth = '1986-09-17',
+  @Email = 'amanda.walker@example.com',
+  @HealthInsuranceId = 'HI13571',
+  @NewPatientId = @NewPatientId OUTPUT;
+
 -- Insert mock data into PatientVisit table
-DECLARE @NewVisitId INT;
+
+-- Visits for Jane Smith (Patient ID 9)
 EXEC SoftwareArchitecture.AddPatientVisit 
-  @PatientId = 8,
-  @VisitDate = '2023-01-01',
-  @Notes = 'Routine check-up',
+  @PatientId = 9,
+  @VisitDate = '2023-01-05',
+  @Notes = 'Annual physical examination',
   @NewVisitId = @NewVisitId OUTPUT;
 
 EXEC SoftwareArchitecture.AddPatientVisit 
-  @PatientId = 8,
-  @VisitDate = '2023-02-15',
-  @Notes = 'Follow-up visit',
+  @PatientId = 9,
+  @VisitDate = '2023-03-20',
+  @Notes = 'Flu symptoms',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Robert Johnson (Patient ID 10)
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 15,
+  @VisitDate = '2023-02-10',
+  @Notes = 'Chest pain evaluation',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 15,
+  @VisitDate = '2023-04-05',
+  @Notes = 'Cardiac follow-up',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Emily Parker (Patient ID 11)
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 19,
+  @VisitDate = '2023-01-15',
+  @Notes = 'Allergic reaction',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 19,
+  @VisitDate = '2023-03-30',
+  @Notes = 'Allergy medication review',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Michael Davis (Patient ID 12)
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 20,
+  @VisitDate = '2023-02-20',
+  @Notes = 'Joint pain consultation',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 20,
+  @VisitDate = '2023-05-10',
+  @Notes = 'Arthritis treatment follow-up',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Sarah Thompson (Patient ID 13)
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 21,
+  @VisitDate = '2023-02-05',
+  @Notes = 'Prenatal checkup',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 21,
+  @VisitDate = '2023-03-05',
+  @Notes = 'Second trimester checkup',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for David Wilson (Patient ID 14)
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 22,
+  @VisitDate = '2023-01-25',
+  @Notes = 'Diabetes screening',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 22,
+  @VisitDate = '2023-04-25',
+  @Notes = 'Glucose monitoring review',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Jennifer Adams (Patient ID 15)
+DECLARE @NewVisitId INT;
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 23,
+  @VisitDate = '2023-02-12',
+  @Notes = 'Migraine consultation',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 23,
+  @VisitDate = '2023-04-15',
+  @Notes = 'Headache treatment follow-up',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for James Anderson (Patient ID 16)
+DECLARE @NewVisitId INT;
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 24,
+  @VisitDate = '2023-03-10',
+  @Notes = 'Back pain evaluation',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 24,
+  @VisitDate = '2023-05-20',
+  @Notes = 'Physical therapy follow-up',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Lisa Martinez (Patient ID 17)
+DECLARE @NewVisitId INT;
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 25,
+  @VisitDate = '2023-01-30',
+  @Notes = 'Annual wellness visit',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 25,
+  @VisitDate = '2023-06-01',
+  @Notes = 'Skin rash consultation',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Thomas Brown (Patient ID 18)
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 18,
+  @VisitDate = '2023-02-28',
+  @Notes = 'Hypertension screening',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 18,
+  @VisitDate = '2023-05-30',
+  @Notes = 'Blood pressure follow-up',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+-- Visits for Amanda Walker (Patient ID 19)
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 19,
+  @VisitDate = '2023-03-15',
+  @Notes = 'Thyroid function test',
+  @NewVisitId = @NewVisitId OUTPUT;
+
+EXEC SoftwareArchitecture.AddPatientVisit 
+  @PatientId = 19,
+  @VisitDate = '2023-06-15',
+  @Notes = 'Hormone therapy consultation',
   @NewVisitId = @NewVisitId OUTPUT;
 
 -- Insert mock data into MedicalHistory table
@@ -608,6 +854,156 @@ EXEC SoftwareArchitecture.AddMedicalHistory
   @Diagnosis = 'Allergic reaction',
   @Treatment = 'Topical cream',
   @PrescribedMedication = 'Hydrocortisone cream',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Insert mock data into MedicalHistory table
+
+-- Using Doctor ID 1 (existing)
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 12,
+  @DoctorId = 1,
+  @Department = 'Cardiology',
+  @ReasonForVisit = 'Chest pain and shortness of breath',
+  @Diagnosis = 'Moderate hypertension',
+  @Treatment = 'Prescribed ACE inhibitors and lifestyle changes',
+  @PrescribedMedication = 'Lisinopril 10mg daily',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 13,
+  @DoctorId = 1,
+  @Department = 'Cardiology',
+  @ReasonForVisit = 'Follow-up for hypertension',
+  @Diagnosis = 'Improving hypertension, responding to medication',
+  @Treatment = 'Continue current medication with reduced sodium diet',
+  @PrescribedMedication = 'Lisinopril 10mg daily, continue for 3 months',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Using Doctor ID 4 (existing)
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 15,
+  @DoctorId = 4,
+  @Department = 'Dermatology',
+  @ReasonForVisit = 'Skin rash on arms and neck',
+  @Diagnosis = 'Contact dermatitis',
+  @Treatment = 'Avoid allergens, apply topical treatment',
+  @PrescribedMedication = 'Hydrocortisone 1% cream twice daily for 7 days',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Using Doctor ID 34 (Dr. Robert Williams - Emergency)
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 26,
+  @DoctorId = 34,
+  @Department = 'Emergency',
+  @ReasonForVisit = 'Severe abdominal pain',
+  @Diagnosis = 'Acute appendicitis',
+  @Treatment = 'Emergency appendectomy',
+  @PrescribedMedication = 'Post-operative antibiotics and pain management',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 27,
+  @DoctorId = 34,
+  @Department = 'Emergency',
+  @ReasonForVisit = 'High fever and severe headache',
+  @Diagnosis = 'Viral meningitis',
+  @Treatment = 'IV fluids, antipyretics, and monitoring',
+  @PrescribedMedication = 'Acetaminophen for fever, IV fluids',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Using Doctor ID 35 (Dr. Sarah Johnson - Neurology)
+DECLARE @NewMedicalHistoryId INT;
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 34,
+  @DoctorId = 35,
+  @Department = 'Neurology',
+  @ReasonForVisit = 'Recurring migraines',
+  @Diagnosis = 'Chronic migraine with aura',
+  @Treatment = 'Preventive medication and lifestyle modifications',
+  @PrescribedMedication = 'Propranolol 40mg daily, Sumatriptan for acute attacks',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 35,
+  @DoctorId = 35,
+  @Department = 'Neurology',
+  @ReasonForVisit = 'Numbness and tingling in extremities',
+  @Diagnosis = 'Peripheral neuropathy',
+  @Treatment = 'Blood sugar control and medication for nerve pain',
+  @PrescribedMedication = 'Gabapentin 300mg three times daily',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Using Doctor ID 36 (Dr. Michael Chen - Pediatric)
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 39,
+  @DoctorId = 36,
+  @Department = 'Pediatric',
+  @ReasonForVisit = 'Recurrent ear infections',
+  @Diagnosis = 'Chronic otitis media',
+  @Treatment = 'Antibiotics and consideration for ear tubes if continues',
+  @PrescribedMedication = 'Amoxicillin 400mg twice daily for 10 days',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 51,
+  @DoctorId = 36,
+  @Department = 'Pediatric',
+  @ReasonForVisit = 'Persistent cough and wheezing',
+  @Diagnosis = 'Childhood asthma',
+  @Treatment = 'Inhaler therapy and environmental control',
+  @PrescribedMedication = 'Albuterol inhaler as needed, Fluticasone inhaler daily',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Using Doctor ID 37 (Dr. Emily Rodriguez - Radiology)
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 52,
+  @DoctorId = 37,
+  @Department = 'Radiology',
+  @ReasonForVisit = 'Follow-up on lung nodule',
+  @Diagnosis = 'Benign pulmonary nodule, stable',
+  @Treatment = 'Continued monitoring with annual chest CT',
+  @PrescribedMedication = 'None required',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 63,
+  @DoctorId = 37,
+  @Department = 'Radiology',
+  @ReasonForVisit = 'Screening mammogram',
+  @Diagnosis = 'BIRADS 2 - benign finding',
+  @Treatment = 'Routine screening mammogram in 1 year',
+  @PrescribedMedication = 'None required',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+-- Additional records to use remaining patient visit IDs
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 64,
+  @DoctorId = 34,
+  @Department = 'Emergency',
+  @ReasonForVisit = 'Broken wrist from fall',
+  @Diagnosis = 'Distal radius fracture',
+  @Treatment = 'Closed reduction and casting',
+  @PrescribedMedication = 'Ibuprofen 600mg every 6 hours for pain',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 65,
+  @DoctorId = 35,
+  @Department = 'Neurology',
+  @ReasonForVisit = 'Memory loss and confusion',
+  @Diagnosis = 'Early-stage dementia',
+  @Treatment = 'Cognitive medication and memory exercises',
+  @PrescribedMedication = 'Donepezil 5mg daily',
+  @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
+
+EXEC SoftwareArchitecture.AddMedicalHistory 
+  @PatientVisitId = 66,
+  @DoctorId = 36,
+  @Department = 'Pediatric',
+  @ReasonForVisit = 'Annual wellness checkup',
+  @Diagnosis = 'Healthy child, normal development',
+  @Treatment = 'Age-appropriate vaccinations',
+  @PrescribedMedication = 'Vitamin D supplements',
   @NewMedicalHistoryId = @NewMedicalHistoryId OUTPUT;
 
 -- Mock execution to update patient
