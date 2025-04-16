@@ -19,6 +19,26 @@ let patientsList = [];
 let currentPatientId = null;
 let patientTable = null;
 
+// Function to initialize List.js for pagination
+function initializeListJs() {
+    // Clear existing instance if it exists
+    if (patientTable) {
+        patientTable.clear();
+        patientTable.destroy();
+    }
+    
+    // Initialize with the correct approach
+    patientTable = new List('patientList', {
+        valueNames: ['id', 'name', 'email', 'phone', 'gender', 'dob', 'address'],
+        page: 10,
+        pagination: true,
+        item: function(values) {
+            // Return the existing DOM element
+            return values.elm;
+        }
+    });
+}
+
 // Function to load all patients
 function loadAllPatients() {
     fetch('/api/Patient/PatientInfo')
@@ -59,66 +79,44 @@ function renderPatientTable(patients) {
     
     noResult.style.display = 'none';
     
-    // Initialize list.js if not already initialized
-    if (!patientTable) {
-        patientTable = new List('patientList', {
-            valueNames: ['id', 'name', 'gender', 'email', 'phone'],
-            page: 10,
-            pagination: true
-        });
-    }
-    
-    // Clear existing data
-    patientTable.clear();
-    
-    // Add new data
-    patients.forEach(patient => {
-        patientTable.add({
-            id: patient.id,
-            name: patient.name,
-            gender: patient.gender,
-            email: patient.email,
-            phone: patient.phoneNumber,
-            DT_Row_Data: patient
-        });
-    });
-    
-    // Update UI to show data
-    updatePatientTableUI();
-}
-
-// Function to update patient table UI
-function updatePatientTableUI() {
-    const tableBody = document.getElementById('patient-table-body');
+    // Clear the table first
     tableBody.innerHTML = '';
     
-    if (patientTable && patientTable.items.length > 0) {
-        patientTable.items.forEach(item => {
-            const patient = item.values();
-            const row = document.createElement('tr');
-            
-            row.innerHTML = `
-                <td class="id">${patient.id}</td>
-                <td class="name">${patient.name}</td>
-                <td class="gender">${patient.gender}</td>
-                <td class="email">${patient.email}</td>
-                <td class="phone">${patient.phone}</td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="ri-more-fill align-middle"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item edit-item-btn" href="javascript:void(0);" onclick="editPatient(${patient.id})"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
-                            <li><a class="dropdown-item remove-item-btn" href="javascript:void(0);" onclick="confirmDeletePatient(${patient.id})"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>
-                        </ul>
-                    </div>
-                </td>
-            `;
-            
-            tableBody.appendChild(row);
-        });
-    }
+    // Create HTML elements for each patient
+    patients.forEach(patient => {
+        // Format the date of birth
+        const dob = patient.dateOfBirth ? new Date(patient.dateOfBirth).toLocaleDateString() : 'N/A';
+        
+        // Create a new row
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td class="id">${patient.id}</td>
+            <td class="name">${patient.name || 'N/A'}</td>
+            <td class="email">${patient.email || 'N/A'}</td>
+            <td class="phone">${patient.phoneNumber || 'N/A'}</td>
+            <td class="gender">${patient.gender || 'N/A'}</td>
+            <td class="dob">${dob}</td>
+            <td class="address">${patient.address || 'N/A'}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ri-more-fill align-middle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item view-item-btn" href="javascript:void(0);" onclick="viewPatient(${patient.id})"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
+                        <li><a class="dropdown-item edit-item-btn" href="javascript:void(0);" onclick="editPatient(${patient.id})"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
+                        <li><a class="dropdown-item remove-item-btn" href="javascript:void(0);" onclick="confirmDeletePatient(${patient.id})"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>
+                    </ul>
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    // Initialize List.js after the table is populated
+    initializeListJs();
 }
 
 // Function to show patient form for adding a new patient

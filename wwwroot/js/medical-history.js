@@ -297,6 +297,26 @@ function loadAllMedicalHistories() {
         });
 }
 
+// Function to initialize List.js for pagination
+function initializeListJs() {
+    // Clear existing instance if it exists
+    if (medicalHistoryTable) {
+        medicalHistoryTable.clear();
+        medicalHistoryTable.destroy();
+    }
+    
+    // Initialize with the correct approach
+    medicalHistoryTable = new List('medicalHistoryList', {
+        valueNames: ['id', 'patientVisitId', 'patientName', 'doctorName', 'department', 'reasonForVisit', 'diagnosis', 'treatment', 'prescribedMedication', 'createdDate'],
+        page: 10,
+        pagination: true,
+        item: function(values) {
+            // Return the existing DOM element
+            return values.elm;
+        }
+    });
+}
+
 // Function to render medical history table
 function renderMedicalHistoryTable(histories) {
     const tableBody = document.getElementById('medical-history-table-body');
@@ -310,84 +330,59 @@ function renderMedicalHistoryTable(histories) {
     
     noResult.style.display = 'none';
     
-    // Initialize list.js if not already initialized
-    if (!medicalHistoryTable) {
-        medicalHistoryTable = new List('medicalHistoryList', {
-            valueNames: ['id', 'patientVisitId', 'doctorId', 'doctorName', 'department', 'reasonForVisit', 'diagnosis', 'treatment', 'prescribedMedication', 'createdDate'],
-            page: 10,
-            pagination: true
-        });
-    }
+    // Clear the table first
+    tableBody.innerHTML = '';
     
-    // Clear existing data
-    medicalHistoryTable.clear();
-    
-    // Add new data
+    // Create HTML elements for each history
     histories.forEach(history => {
         // Format dates
         const createdDate = new Date(history.createdDate).toLocaleString();
         
         // Find doctor name from doctorsList
         const doctor = doctorsList.find(d => d.id === history.doctorId);
-        console.log(doctorsList); // Debug log
         const doctorName = doctor ? doctor.name : 'Unknown';
         
-        medicalHistoryTable.add({
-            id: history.id,
-            patientVisitId: history.patientVisitId,
-            doctorId: history.doctorId,
-            doctorName: doctorName,
-            department: history.department || 'Not specified',
-            reasonForVisit: history.reasonForVisit || 'Not specified',
-            diagnosis: history.diagnosis || 'Not specified',
-            treatment: history.treatment || 'Not specified',
-            prescribedMedication: history.prescribedMedication || 'Not specified',
-            createdDate: createdDate,
-            DT_Row_Data: history
-        });
+        // Find patient name using the visit and patient lists
+        let patientName = 'Unknown';
+        const visit = visitsList.find(v => v.id === history.patientVisitId);
+        if (visit) {
+            const patient = patientsList.find(p => p.id === visit.patientId);
+            if (patient) {
+                patientName = patient.name;
+            }
+        }
+        
+        // Create a new row
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td class="id align-middle">${history.id}</td>
+            <td class="patientVisitId align-middle">${history.patientVisitId}</td>
+            <td class="patientName align-middle">${patientName}</td>
+            <td class="doctorName align-middle">${doctorName}</td>
+            <td class="departmentCustom align-middle">${history.department || 'Not specified'}</td>
+            <td class="reasonForVisit align-middle">${history.reasonForVisit || 'Not specified'}</td>
+            <td class="diagnosis align-middle">${history.diagnosis || 'Not specified'}</td>
+            <td class="treatment align-middle">${history.treatment || 'Not specified'}</td>
+            <td class="prescribedMedication align-middle">${history.prescribedMedication || 'Not specified'}</td>
+            <td class="createdDate align-middle">${createdDate}</td>
+            <td class="align-middle">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-soft-primary edit-item-btn" onclick="editMedicalHistory(${history.id})">
+                        <i class="ri-pencil-fill align-bottom"></i>
+                    </button>
+                    <button class="btn btn-sm btn-soft-danger remove-item-btn" onclick="confirmDeleteMedicalHistory(${history.id})">
+                        <i class="ri-delete-bin-fill align-bottom"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
     });
     
-    // Update UI to show data
-    updateMedicalHistoryTableUI();
-}
-
-// Function to update medical history table UI
-function updateMedicalHistoryTableUI() {
-    const tableBody = document.getElementById('medical-history-table-body');
-    tableBody.innerHTML = '';
-    
-    if (medicalHistoryTable && medicalHistoryTable.items.length > 0) {
-        medicalHistoryTable.items.forEach(item => {
-            const history = item.values();
-            const row = document.createElement('tr');
-            
-            // Add vertical alignment to all cells to ensure middle alignment
-            // Don't truncate text anymore - show full content
-            row.innerHTML = `
-                <td class="id align-middle">${history.id}</td>
-                <td class="patientVisitId align-middle">${history.patientVisitId}</td>
-                <td class="doctorName align-middle">${history.doctorName}</td>
-                <td class="departmentCustom align-middle">${history.department}</td>
-                <td class="reasonForVisit align-middle">${history.reasonForVisit}</td>
-                <td class="diagnosis align-middle">${history.diagnosis}</td>
-                <td class="treatment align-middle">${history.treatment}</td>
-                <td class="prescribedMedication align-middle">${history.prescribedMedication}</td>
-                <td class="createdDate align-middle">${history.createdDate}</td>
-                <td class="align-middle">
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-soft-primary edit-item-btn" onclick="editMedicalHistory(${history.id})">
-                            <i class="ri-pencil-fill align-bottom"></i>
-                        </button>
-                        <button class="btn btn-sm btn-soft-danger remove-item-btn" onclick="confirmDeleteMedicalHistory(${history.id})">
-                            <i class="ri-delete-bin-fill align-bottom"></i>
-                        </button>
-                    </div>
-                </td>
-            `;
-            
-            tableBody.appendChild(row);
-        });
-    }
+    // Initialize List.js after the table is populated
+    initializeListJs();
 }
 
 // Function to show medical history form for adding a new record

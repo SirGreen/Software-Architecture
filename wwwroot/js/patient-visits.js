@@ -4,11 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize AOS animation
     AOS.init();
     
-    // Load all patients to populate the filter dropdown
+    // Load all patients first, then load visits after patients are loaded
     loadAllPatients();
-    
-    // Load all visits when page loads
-    loadAllVisits();
     
     // Initialize flatpickr for date inputs
     flatpickr("#visit-date", {
@@ -22,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 let patientsList = [];
 let visitsList = [];
 let currentVisitId = null;
-let visitsTable = null;
+let visitTable = null;
 
 // Function to load all patients
 function loadAllPatients() {
@@ -38,6 +35,9 @@ function loadAllPatients() {
             
             // Populate patient filter dropdown
             populatePatientDropdowns(data);
+            
+            // Now that we have patient data, load visits
+            loadAllVisits();
         })
         .catch(error => {
             console.error('Error loading patients:', error);
@@ -47,6 +47,9 @@ function loadAllPatients() {
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
+            
+            // Load visits anyway to show at least the visits data
+            loadAllVisits();
         });
 }
 
@@ -92,13 +95,13 @@ function populatePatientDropdowns(patients) {
 function filterVisitsByPatient(patientId) {
     if (!patientId) {
         // If no patient selected (All Patients), show all visits
-        renderVisitsTable(visitsList);
+        renderVisitTable(visitsList);
         return;
     }
     
     // Filter visits by patient ID
     const filteredVisits = visitsList.filter(visit => visit.patientId == patientId);
-    renderVisitsTable(filteredVisits);
+    renderVisitTable(filteredVisits);
 }
 
 // Function to load all visits
@@ -112,7 +115,7 @@ function loadAllVisits() {
         })
         .then(data => {
             visitsList = data;
-            renderVisitsTable(data);
+            renderVisitTable(data);
         })
         .catch(error => {
             console.error('Error loading visits:', error);
@@ -124,12 +127,32 @@ function loadAllVisits() {
             });
             
             // Show empty table
-            renderVisitsTable([]);
+            renderVisitTable([]);
         });
 }
 
-// Function to render visits table
-function renderVisitsTable(visits) {
+// Function to initialize List.js for pagination
+function initializeListJs() {
+    // Clear existing instance if it exists
+    if (visitTable) {
+        visitTable.clear();
+        visitTable.destroy();
+    }
+    
+    // Initialize with the correct approach
+    visitTable = new List('visitList', {
+        valueNames: ['id', 'patientId', 'patientName', 'visitDate', 'notes'],
+        page: 10,
+        pagination: true,
+        item: function(values) {
+            // Return the existing DOM element
+            return values.elm;
+        }
+    });
+}
+
+// Function to render visit table
+function renderVisitTable(visits) {
     const tableBody = document.getElementById('visit-table-body');
     const noResult = document.querySelector('.noresult');
     
@@ -141,39 +164,45 @@ function renderVisitsTable(visits) {
     
     noResult.style.display = 'none';
     
-    // Initialize list.js if not already initialized
-    if (!visitsTable) {
-        visitsTable = new List('visitList', {
-            valueNames: ['id', 'patientId', 'patientName', 'visitDate', 'notes'],
-            page: 10,
-            pagination: true
-        });
-    }
+    // Clear the table first
+    tableBody.innerHTML = '';
     
-    // Clear existing data
-    visitsTable.clear();
-    
-    // Add new data
+    // Create HTML elements for each visit
     visits.forEach(visit => {
+        // Format the visit date
+        const visitDate = new Date(visit.visitDate).toLocaleString();
+        
         // Find patient name
         const patient = patientsList.find(p => p.id === visit.patientId);
         const patientName = patient ? patient.name : 'Unknown';
         
-        // Format date
-        const visitDate = new Date(visit.visitDate).toLocaleString();
+        // Create a new row
+        const row = document.createElement('tr');
         
-        visitsTable.add({
-            id: visit.id,
-            patientId: visit.patientId,
-            patientName: patientName,
-            visitDate: visitDate,
-            notes: visit.notes || 'No notes',
-            DT_Row_Data: visit
-        });
+        row.innerHTML = `
+            <td class="id">${visit.id}</td>
+            <td class="patientId">${visit.patientId}</td>
+            <td class="patientName">${patientName}</td>
+            <td class="visitDate">${visitDate}</td>
+            <td class="notes">${visit.notes || 'No notes'}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ri-more-fill align-middle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item edit-item-btn" href="javascript:void(0);" onclick="editVisit(${visit.id})"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
+                        <li><a class="dropdown-item remove-item-btn" href="javascript:void(0);" onclick="confirmDeleteVisit(${visit.id})"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>
+                    </ul>
+                </div>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
     });
     
-    // Update UI to show data
-    updateVisitsTableUI();
+    // Initialize List.js after the table is populated
+    initializeListJs();
 }
 
 // Function to update visits table UI
@@ -181,8 +210,8 @@ function updateVisitsTableUI() {
     const tableBody = document.getElementById('visit-table-body');
     tableBody.innerHTML = '';
     
-    if (visitsTable && visitsTable.items.length > 0) {
-        visitsTable.items.forEach(item => {
+    if (visitTable && visitTable.items.length > 0) {
+        visitTable.items.forEach(item => {
             const visit = item.values();
             const row = document.createElement('tr');
             

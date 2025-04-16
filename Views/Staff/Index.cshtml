@@ -369,4 +369,13 @@
     <script src="~/assets/libs/choices.min.js"></script>
     <script src="~/assets/libs/aos/aos.js"></script>
     <script src="~/js/employee-management.js"></script>
+    <script>
+        // Fix for pagination links jumping to top of page
+        document.addEventListener('click', function(e) {
+            // Check if the clicked element is a pagination link
+            if (e.target.closest('.listjs-pagination a')) {
+                e.preventDefault(); // Prevent default link behavior
+            }
+        }, true);
+    </script>
 }

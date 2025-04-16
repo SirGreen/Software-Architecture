@@ -333,13 +333,22 @@ function addCustomStyling() {
 
 // Function to initialize List.js for pagination
 function initializeListJs() {
-    var options = {
+    // Clear existing instance if it exists
+    if (employeeList) {
+        employeeList.clear();
+        employeeList.destroy();
+    }
+    
+    // Initialize with the correct approach
+    employeeList = new List('employeeList', {
         valueNames: ['id', 'name', 'role', 'departmentCustom'],
         page: 10,
-        pagination: true
-    };
-    
-    var employeeList = new List('employeeList', options);
+        pagination: true,
+        item: function(values) {
+            // Return the existing DOM element
+            return values.elm;
+        }
+    });
     
     // Add event listener for pagination
     employeeList.on('updated', function() {

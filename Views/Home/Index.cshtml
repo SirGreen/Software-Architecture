@@ -2,6 +2,21 @@
     ViewData["Title"] = "Healthcare Dashboard";
 }
 
+<!-- Page Title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Healthcare Management Dashboard</h4>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Dashboard Header -->
 <div class="row">
     <div class="col-xl-12">
@@ -52,7 +67,7 @@
                             <h5 class="text-muted text-uppercase fs-13">Medical Data</h5>
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1 ms-3">
-                                    <h2 class="mb-0"><span class="counter-value" data-target="1156">0</span></h2>
+                                    <h2 class="mb-0"><span class="counter-value" data-target="937">0</span></h2>
                                 </div>
                                 <div class="flex-shrink-0 text-end dash-widget">
                                     <div id="medical_chart" data-colors='["--vz-info"]' class="apex-charts"></div>
@@ -89,7 +104,7 @@
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <div class="card bg-primary bg-soft mb-0">
+                        <div class="card bg-primary-subtle bg-soft mb-0">
                             <div class="card-body">
                                 <a href="/Patient" class="stretched-link">
                                     <div class="d-flex align-items-center">
@@ -97,8 +112,8 @@
                                             <i class="ri-user-heart-line display-6 text-primary"></i>
                                         </div>
                                         <div class="flex-grow-1 ms-3">
-                                            <h5 class="mb-0 text-primary">Patient Management</h5>
-                                            <p class="text-muted mb-0">View and manage patients</p>
+                                            <h5 class="mb-0 text-body">Patient Management</h5>
+                                            <p class="text-secondary mb-0">View and manage patients</p>
                                         </div>
                                     </div>
                                 </a>
@@ -106,7 +121,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="card bg-success bg-soft mb-0">
+                        <div class="card bg-success-subtle bg-soft mb-0">
                             <div class="card-body">
                                 <a href="/Staff" class="stretched-link">
                                     <div class="d-flex align-items-center">
@@ -123,7 +138,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="card bg-info bg-soft mb-0">
+                        <div class="card bg-info-subtle bg-soft mb-0">
                             <div class="card-body">
                                 <a href="/Patient/Visits" class="stretched-link">
                                     <div class="d-flex align-items-center">
